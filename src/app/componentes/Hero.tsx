@@ -1,4 +1,3 @@
-
 import Link from 'next/link';
 import TechCarousel from './TechCarousel';
 
@@ -29,7 +28,6 @@ export default function Hero() {
             </div>
           </div>
         </div>
-        {/* TechCarousel em largura total */}
         <div className="w-full ">
           <TechCarousel />
         </div>
@@ -68,11 +66,25 @@ export default function Hero() {
             </div>
             <div>
               <span className="text-green-400">database:</span>
-              <span className="text-orange-300">{` ['MongoDB', 'PostgreSQL'],`}</span>
+              <span className="text-orange-300">{` ['MongoDB', 'SQLite'],`}</span>
             </div>
             <div>
               <span className="text-green-400">tools:</span>
-              <span className="text-orange-300">{` ['Git', 'Docker', 'VS Code']`}</span>
+              <span className="text-orange-300">{` ['Git', 'VS Code']`}</span>
+            </div>
+            <div>
+              <span className="text-green-400">extra:</span>
+              <span className="text-orange-300">
+              {`{\n`}
+                <br/>
+                &nbsp;&nbsp;<span className="text-blue-400">image</span>
+                {`: ['Figma', 'GIMP'],\n`}  &nbsp;&nbsp; <br/> 
+                &nbsp;&nbsp;<span className="text-blue-400">games</span>
+                {`: ['GD', 'Godot', 'PyGame'],\n`} &nbsp;&nbsp;  
+                &nbsp;&nbsp;<span className="text-blue-400">mobile</span>
+                {`: ['React Native']\n`}
+                {`}`}
+              </span>
             </div>
           </div>
           <div className="pl-4 text-white">{`}`}</div>
@@ -80,3 +92,10 @@ export default function Hero() {
       </div>
     );
   }
+
+
+//   Olá! Sou estudante de Ciência da Computação na Universidade Federal do Amapá (UNIFAP) e tenho adquirido uma sólida base técnica, além de diversas experiências práticas na área de desenvolvimento.
+// Desde 2023 até 2024, atuei como monitora no Projeto de Extensão UNIFAP Digital, onde tive a oportunidade de ensinar desenvolvimento web para a comunidade de forma gratuita, lecionando aulas de HTML, CSS, JavaScript, React e Express.
+// Embora meu conhecimento seja mais voltado para a área de stack frontend, também tenho experiência na criação de APIs utilizando as mesmas tecnologias, como Express.js e ORMs como o Prisma e Sequelize. Além disso, também utilizo plataformas como Firebase e Supabase para projetos com foco somente no frontend. Fora isso, possuo conhecimento em frameworks como NextJS e Tailwind CSS, o que amplia ainda mais meu conjunto de habilidades.
+// Além do meu foco no desenvolvimento web, também realizo projetos pessoais envolvendo outras tecnologias, como React Native para desenvolvimento mobile e criação de jogos com a biblioteca GD. Essa diversidade de experiências me mantém constantemente atualizada e em busca de novos conhecimentos.
+// Estou sempre buscando me aprimorar e evoluir profissionalmente, com o objetivo de me tornar uma desenvolvedora cada vez mais qualificada e capaz de entregar soluções de alto nível.

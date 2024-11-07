@@ -14,7 +14,6 @@ export default function Header() {
             Heloysa
           </Link>
           
-          {/* Desktop Menu */}
           <div className="hidden md:flex space-x-8">
             <Link href="#about" className="hover:text-blue-600 transition">
               Sobre
@@ -31,7 +30,6 @@ export default function Header() {
             
           </div>
 
-          {/* Mobile Menu Button */}
           <button
             className="md:hidden"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -52,7 +50,6 @@ export default function Header() {
           </button>
         </div>
 
-        {/* Mobile Menu */}
         {isMenuOpen && (
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1">
