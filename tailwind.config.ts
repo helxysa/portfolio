@@ -14,6 +14,10 @@ const config: Config = {
       },
     },
     keyframes: {
+      blink: {
+        '0%, 100%': { opacity: '1' },
+        '50%': { opacity: '0' }
+      },
       fadeIn: {
         '0%': { opacity: '0' },
         '100%': { opacity: '1' },
@@ -41,8 +45,15 @@ const config: Config = {
       slideLeft: 'slideLeft 1s ease-out',
       slideRight: 'slideRight 1s ease-out',
       slideUp: 'slideUp 1s ease-out',
+      blink: 'blink 1.5s ease-in-out infinite',
     },
   },
   plugins: [],
+  safelist: [
+    'swiper-button-prev',
+    'swiper-button-next',
+    'swiper-pagination-bullet',
+    'swiper-pagination-bullet-active'
+  ]
 };
 export default config;

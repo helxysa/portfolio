@@ -1,90 +1,97 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBars, faTimes, faCodeBranch, faCode, faEnvelope } from '@fortawesome/free-solid-svg-icons';
+import { faGithub,  } from '@fortawesome/free-brands-svg-icons';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   return (
-    <header className="fixed w-full top-0 z-50 bg-white/10 backdrop-blur-sm">
-      <nav className="container mx-auto px-6 py-4">
-        <div className="flex items-center justify-between">
-          <Link href="/" className="text-2xl font-bold">
-            Heloysa
-          </Link>
-          
-          <div className="hidden md:flex space-x-8">
-            <Link href="#about" className="hover:text-blue-600 transition">
-              Sobre
-            </Link>
-            <Link href="#projects" className="hover:text-blue-600 transition">
-              Projetos
-            </Link>
-            <Link href="#skills" className="hover:text-blue-600 transition">
-              Habilidades
-            </Link>
-            <Link href="#contact" className="hover:text-blue-600 transition">
-              Contato
-            </Link>
-            
-          </div>
-
-          <button
-            className="md:hidden"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d={isMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}
-              />
-            </svg>
-          </button>
-        </div>
-
-        {isMenuOpen && (
-          <div className="md:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1">
-              <Link
-                href="#about"
-                className="block px-3 py-2 hover:bg-gray-100 rounded-md"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Sobre
+    <header className={`fixed w-full top-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-gray-900 py-2 px-4' : 'bg-gray-800 py-4 px-6'}`}>
+      <nav className="container mx-auto flex items-center justify-between">
+        <div className="flex items-center">
+          <ul className="hidden md:flex space-x-6">
+            <li>
+              <Link href="https://github.com/helxysa" className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors" target='_blank'>
+                <FontAwesomeIcon icon={faGithub} className="w-4 h-4 text-white" />
+                GitHub
               </Link>
-              <Link
-                href="#projects"
-                className="block px-3 py-2 hover:bg-gray-100 rounded-md"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Projetos
-              </Link>
-              <Link
-                href="#skills"
-                className="block px-3 py-2 hover:bg-gray-100 rounded-md"
-                onClick={() => setIsMenuOpen(false)}
-              >
+            </li>
+            <li>
+              <Link href="#habilidades" className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors">
+                <FontAwesomeIcon icon={faCode} className="w-4 h-4 text-white" />
                 Habilidades
               </Link>
-              <Link
-                href="#contact"
-                className="block px-3 py-2 hover:bg-gray-100 rounded-md"
-                onClick={() => setIsMenuOpen(false)}
-              >
+            </li>
+            <li>
+              <Link href="#contato" className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors">
+                <FontAwesomeIcon icon={faEnvelope} className="w-4 h-4 text-white" />
                 Contato
               </Link>
-            </div>
+            </li>
+          </ul>
+        </div>
+        <div className="flex items-center space-x-4">
+          <div className="flex items-center text-purple-400 text-lg">
+            <FontAwesomeIcon icon={faCodeBranch} className="w-4 h-4 mr-1 text-white" />
+            Heloysa
           </div>
-        )}
+          <div className="w-2 h-2 bg-green-500 rounded-full animate-blink"></div>
+          <div className="w-1 h-4 bg-gray-400 "></div>
+        </div>
+        <button
+          className="md:hidden text-gray-300 hover:text-white transition-colors"
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+        >
+          <FontAwesomeIcon icon={isMenuOpen ? faTimes : faBars} className="w-6 h-6 text-white" />
+        </button>
       </nav>
+
+      {isMenuOpen && (
+        <div className="md:hidden bg-gray-800 border-t border-gray-700">
+          <div className="px-4 py-2 space-y-1">
+            <Link
+              href="https://github.com/helxysa"
+              className="block text-gray-300 hover:text-white transition-colors flex items-center gap-2"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <FontAwesomeIcon icon={faGithub} className="w-4 h-4 text-white" />
+              GitHub
+            </Link>
+            <Link
+              href="#habilidades"
+              className="block text-gray-300 hover:text-white transition-colors flex items-center gap-2"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <FontAwesomeIcon icon={faCode} className="w-4 h-4 text-white" />
+              Habilidades
+            </Link>
+            <Link
+              href="#contato"
+              className="block text-gray-300 hover:text-white transition-colors flex items-center gap-2"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <FontAwesomeIcon icon={faEnvelope} className="w-4 h-4 text-white" />
+              Contato
+            </Link>
+          </div>
+        </div>
+      )}
     </header>
   );
 }
