@@ -5,9 +5,10 @@ import Image from 'next/image'
 interface SpaceShipProps {
     onHit: (index: number) => void
     cardsRef: React.RefObject<(HTMLDivElement | null)[]>
+    onMeteorHit?: () => void
 }
 
-export default function SpaceShip({ onHit, cardsRef }: SpaceShipProps) {
+export default function SpaceShip({ onHit, cardsRef, onMeteorHit }: SpaceShipProps) {
     const [position, setPosition] = useState({ x: 0, y: 0 })
     const [direction, setDirection] = useState<'left' | 'right'>('right')
     const [isInSection, setIsInSection] = useState(false)
@@ -23,6 +24,8 @@ export default function SpaceShip({ onHit, cardsRef }: SpaceShipProps) {
 
     const pendingHitRef = useRef<number | null>(null)
 
+    const [isWPressed, setIsWPressed] = useState(false)
+
     useEffect(() => {
         if (pendingHitRef.current !== null) {
             onHit(pendingHitRef.current)
@@ -35,12 +38,14 @@ export default function SpaceShip({ onHit, cardsRef }: SpaceShipProps) {
         if (!section) return false
 
         const rect = section.getBoundingClientRect()
+        const padding = 20
         setSectionBounds({ top: rect.top, bottom: rect.bottom })
+        
         return (
-            mouseX >= rect.left &&
-            mouseX <= rect.right &&
-            mouseY >= rect.top &&
-            mouseY <= rect.bottom
+            mouseX >= rect.left - padding &&
+            mouseX <= rect.right + padding &&
+            mouseY >= rect.top - padding &&
+            mouseY <= rect.bottom + padding
         )
     }, [])
 
@@ -78,7 +83,23 @@ export default function SpaceShip({ onHit, cardsRef }: SpaceShipProps) {
                 setBullets(prev => prev.filter(b => b.id !== bullet.id))
             }
         })
-    }, [cardsRef])
+
+        const meteors = document.querySelectorAll('.meteor')
+        meteors.forEach(meteor => {
+            const rect = meteor.getBoundingClientRect()
+            
+            if (
+                bullet.x >= rect.left &&
+                bullet.x <= rect.right &&
+                bullet.y >= rect.top &&
+                bullet.y <= rect.bottom
+            ) {
+                meteor.remove()
+                setBullets(prev => prev.filter(b => b.id !== bullet.id))
+                if (onMeteorHit) onMeteorHit()
+            }
+        })
+    }, [cardsRef, onMeteorHit])
 
     const updateBullets = useCallback(() => {
         setBullets(prev => {
@@ -96,6 +117,28 @@ export default function SpaceShip({ onHit, cardsRef }: SpaceShipProps) {
         })
     }, [sectionBounds.top, checkCollision])
 
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key.toLowerCase() === 'w') {
+                setIsWPressed(true)
+            }
+        }
+
+        const handleKeyUp = (e: KeyboardEvent) => {
+            if (e.key.toLowerCase() === 'w') {
+                setIsWPressed(false)
+            }
+        }
+
+        window.addEventListener('keydown', handleKeyDown)
+        window.addEventListener('keyup', handleKeyUp)
+
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown)
+            window.removeEventListener('keyup', handleKeyUp)
+        }
+    }, [])
+
     const updatePosition = useCallback(() => {
         const smoothFactor = 0.15
 
@@ -107,13 +150,13 @@ export default function SpaceShip({ onHit, cardsRef }: SpaceShipProps) {
             y: Math.round(currentPosition.current.y)
         })
 
-        if (isInSection) {
+        if (isInSection && isWPressed) {
             shoot()
-            updateBullets()
         }
+        updateBullets()
 
         animationFrame.current = requestAnimationFrame(updatePosition)
-    }, [isInSection, shoot, updateBullets])
+    }, [isInSection, shoot, updateBullets, isWPressed])
 
     useEffect(() => {
         const handleMouseMove = (e: MouseEvent) => {
@@ -152,13 +195,14 @@ export default function SpaceShip({ onHit, cardsRef }: SpaceShipProps) {
     if (!isInSection) return null
 
     return (
-        <div className="fixed inset-0 pointer-events-none z-50">
+        <div className="fixed inset-0 z-50 pointer-events-none">
             <div
-                className="spaceship absolute will-change-transform"
+                className="spaceship absolute will-change-transform pointer-events-none transition-opacity duration-200"
                 style={{
                     left: `${position.x}px`,
                     top: `${position.y}px`,
-                    transform: `translate(-50%, -50%) ${direction === 'left' ? 'scaleX(-1)' : ''}`
+                    transform: `translate(-50%, -50%) ${direction === 'left' ? 'scaleX(-1)' : ''}`,
+                    opacity: isInSection ? 1 : 0
                 }}
             >
                 <div className="relative w-16 h-16">
@@ -178,7 +222,7 @@ export default function SpaceShip({ onHit, cardsRef }: SpaceShipProps) {
                 bullet.y >= sectionBounds.top && bullet.y <= sectionBounds.bottom && (
                     <div
                         key={bullet.id}
-                        className="bullet absolute"
+                        className="bullet absolute pointer-events-none"
                         style={{
                             left: `${bullet.x}px`,
                             top: `${bullet.y}px`,

@@ -16,7 +16,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`antialiased mb-10 cursor-none`}
+        className={`antialiased mb-10 `}
         suppressHydrationWarning
       >
         <MouseFollower />

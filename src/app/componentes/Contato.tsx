@@ -8,7 +8,7 @@ export default function Contato() {
             <div className="stars absolute inset-0" />
             <div className="space-dust absolute inset-0" />
             
-            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative z-10">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 relative z-10">
                 <div className="relative mb-12">
                     <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-600 mb-2">
                         Vamos Conversar?

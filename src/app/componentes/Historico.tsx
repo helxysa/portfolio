@@ -3,6 +3,7 @@ import { useEffect, useState, useRef, useCallback } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation, Pagination } from 'swiper/modules'
 import SpaceShip from './SpaceShip'
+import Meteor from './Meteor'
 
 import 'swiper/css'
 import 'swiper/css/navigation'
@@ -63,6 +64,10 @@ export default function Historico() {
     const [expandedCard, setExpandedCard] = useState<number | null>(null)
     const [spaceshipEnabled, setSpaceshipEnabled] = useState(true)
     const [showPulse, setShowPulse] = useState(true)
+    const [meteors, setMeteors] = useState<Array<{ id: number; x: number; y: number; speed: number }>>([])
+    const [score, setScore] = useState(0)
+    const [gameActive, setGameActive] = useState(false)
+    const [showVictory, setShowVictory] = useState(false)
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -105,7 +110,7 @@ export default function Historico() {
         if (isVisible) {
             const timer = setTimeout(() => {
                 setShowPulse(false)
-            }, 5000) // O pulse para após 5 segundos
+            }, 5000)
 
             return () => clearTimeout(timer)
         }
@@ -126,13 +131,58 @@ export default function Historico() {
         }
     }, [])
 
+    const startGame = useCallback(() => {
+        setGameActive(true)
+        setScore(0)
+        setShowVictory(false)
+    }, [])
+
+    const spawnMeteor = useCallback(() => {
+        if (!gameActive) return
+        
+        const newMeteor = {
+            id: Date.now(),
+            x: Math.random() * window.innerWidth,
+            y: -50,
+            speed: 2 + Math.random() * 2
+        }
+        
+        setMeteors(prev => [...prev, newMeteor])
+    }, [gameActive])
+
+    useEffect(() => {
+        if (gameActive && meteors.length < 3) {
+            const spawnInterval = setInterval(spawnMeteor, 2000)
+            return () => clearInterval(spawnInterval)
+        }
+    }, [gameActive, meteors.length, spawnMeteor])
+
+    const handleMeteorDestroy = useCallback(() => {
+        setScore(prev => {
+            const newScore = prev + 1
+            if (newScore >= 5) {
+                setGameActive(false)
+                setShowVictory(true)
+            }
+            return newScore
+        })
+    }, [])
+
+    const handleMeteorEscape = useCallback((meteorId: number) => {
+        setMeteors(prev => prev.filter(meteor => meteor.id !== meteorId))
+    }, [])
+
     return (
         <section 
             ref={sectionRef} 
             id="historico-section"
-            className={`relative min-h-[80vh] sm:min-h-screen bg-gradient-to-b from-gray-900 to-[#1e1e1e] py-4 sm:py-20 ${!isMobile && spaceshipEnabled ? 'cursor-none' : ''}`}
+            className={`relative min-h-[80vh] sm:min-h-screen bg-gradient-to-b from-gray-900 to-[#1e1e1e] py-4 sm:py-20 ${!isMobile && spaceshipEnabled ? 'cursor-none' : ''} ${!isMobile ? 'pb-8 lg:pb-4' : ''}`}
         >
-            {!isMobile && isVisible && spaceshipEnabled && <SpaceShip onHit={handleHit} cardsRef={cardsRef} />}
+            {!isMobile && isVisible && spaceshipEnabled && (
+                <div className="spaceship-container">
+                    <SpaceShip onHit={handleHit} cardsRef={cardsRef} />
+                </div>
+            )}
             
             <div className="stars absolute inset-0" />
             <div className="space-dust absolute inset-0" />
@@ -146,7 +196,6 @@ export default function Historico() {
 
             <div className="relative max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 mt-8 sm:mt-16">
                 {isMobile ? (
-                    // Layout vertical para mobile
                     <div className="flex flex-col gap-4">
                         {items.map((item, index) => (
                             <div
@@ -203,18 +252,17 @@ export default function Historico() {
                         ))}
                     </div>
                 ) : (
-                    // Swiper para desktop
                     <Swiper
                         modules={[Navigation, Pagination]}
                         effect={'coverflow'}
                         grabCursor={true}
                         centeredSlides={true}
-                        initialSlide={1}
+                        initialSlide={2}
                         coverflowEffect={{
                             rotate: 0,
                             stretch: 0,
                             depth: 100,
-                            modifier: 1,
+                            modifier: 3,
                             slideShadows: false,
                         }}
                         breakpoints={{
@@ -278,9 +326,10 @@ export default function Historico() {
                                                     : expandedCard === index 
                                                         ? 'border-purple-500 shadow-purple-500/50 ring-2 ring-purple-500/50' 
                                                         : 'border-gray-700/50 hover:border-purple-500/50 hover:shadow-purple-500/30'
-                                            } border relative h-full`}
+                                            } border relative h-full cursor-pointer`}
+                                            onClick={() => setExpandedCard(expandedCard === index ? null : index)}
                                         >
-                                            <div className="flex flex-col p-4 sm:p-6 h-full">
+                                            <div className="flex flex-col p-4 sm:p-6 h-full relative">
                                                 <div className="flex items-start justify-between mb-3">
                                                     <span className="text-sm text-gray-400 font-medium">
                                                         {item.ano}
@@ -304,26 +353,32 @@ export default function Historico() {
                                                     {item.descricao}
                                                 </p>
 
-                                                <button
-                                                    onClick={() => setExpandedCard(expandedCard === index ? null : index)}
-                                                    className={`mt-auto text-sm font-medium flex items-center gap-1 transition-all duration-300 ${
-                                                        expandedCard === index 
-                                                            ? 'text-purple-400 hover:text-purple-300' 
-                                                            : 'text-gray-400 hover:text-purple-400'
-                                                    }`}
-                                                >
-                                                    {expandedCard === index ? 'Ver menos' : 'Ver mais'}
-                                                    <svg 
-                                                        className={`w-4 h-4 transition-transform duration-300 ${
-                                                            expandedCard === index ? 'rotate-180' : ''
-                                                        }`} 
-                                                        fill="none" 
-                                                        stroke="currentColor" 
-                                                        viewBox="0 0 24 24"
+                                                <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 bg-gradient-to-t from-gray-800/95 via-gray-800/80 to-transparent">
+                                                    <div
+                                                        className={`flex items-center justify-center gap-2 text-sm font-medium transition-all duration-300 ${
+                                                            expandedCard === index 
+                                                                ? 'text-purple-400 hover:text-purple-300' 
+                                                                : 'text-gray-400 hover:text-purple-400'
+                                                        }`}
                                                     >
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                                                    </svg>
-                                                </button>
+                                                        <span>{expandedCard === index ? 'Ver menos' : 'Ver mais'}</span>
+                                                        <svg 
+                                                            className={`w-5 h-5 transition-transform duration-300 ${
+                                                                expandedCard === index ? 'rotate-180' : ''
+                                                            }`} 
+                                                            fill="none" 
+                                                            stroke="currentColor" 
+                                                            viewBox="0 0 24 24"
+                                                        >
+                                                            <path 
+                                                                strokeLinecap="round" 
+                                                                strokeLinejoin="round" 
+                                                                strokeWidth={2} 
+                                                                d="M19 9l-7 7-7-7"
+                                                            />
+                                                        </svg>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -334,27 +389,34 @@ export default function Historico() {
                 )}
             </div>
 
-            {/* Botão de toggle da spaceship - só aparece em desktop (>= 1024px) */}
+            {/* Instrução de tiro - adicionada aqui */}
+            <div className="text-center mt-4 text-gray-400/50 text-sm font-medium">
+                Aperte W para atirar
+            </div>
+
+            {/* Botão de toggle da spaceship - ajustado para telas maiores */}
             {!isMobile && (
                 <button
                     onClick={() => setSpaceshipEnabled(!spaceshipEnabled)}
-                    className={`absolute bottom-8 right-8 px-3 py-1.5 rounded-full bg-gray-800/80 backdrop-blur-sm border transition-all duration-300 group z-10 hidden lg:block
+                    className={`absolute bottom-8 right-8 lg:bottom-10 lg:right-10 xl:bottom-12 xl:right-12 2xl:bottom-16 2xl:right-16 3xl:bottom-20 3xl:right-20 
+                        px-3 py-1.5 lg:px-4 lg:py-2 xl:px-5 xl:py-2.5 
+                        rounded-full bg-gray-800/80 backdrop-blur-sm border transition-all duration-300 group z-10 hidden lg:block
                         ${showPulse && isVisible ? 'animate-pulse-border' : 'border-gray-700/50 hover:border-purple-500/50'} 
                         hover:shadow-purple-500/30`}
                 >
-                    <div className={`flex items-center gap-1.5 text-xs ${
+                    <div className={`flex items-center gap-1.5 text-xs lg:text-sm xl:text-base ${
                         showPulse && isVisible ? 'animate-pulse-text' : 'text-gray-400 group-hover:text-purple-400'
                     }`}>
                         {spaceshipEnabled ? (
                             <>
-                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg className="w-3.5 h-3.5 lg:w-4 lg:h-4 xl:w-5 xl:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                                 <span>Desativar Nave</span>
                             </>
                         ) : (
                             <>
-                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg className="w-3.5 h-3.5 lg:w-4 lg:h-4 xl:w-5 xl:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                                 <span>Ativar Nave</span>
@@ -362,6 +424,49 @@ export default function Historico() {
                         )}
                     </div>
                 </button>
+            )}
+
+            {!isMobile && gameActive && meteors.map(meteor => (
+                <Meteor
+                    key={meteor.id}
+                    x={meteor.x}
+                    y={meteor.y}
+                    speed={meteor.speed}
+                    onDestroy={() => handleMeteorDestroy()}
+                    onEscape={() => handleMeteorEscape(meteor.id)}
+                />
+            ))}
+
+            {!isMobile && !gameActive && !showVictory && (
+                <button
+                    onClick={startGame}
+                    className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
+                        px-6 py-3 bg-purple-600 text-white rounded-lg shadow-lg 
+                        hover:bg-purple-700 transition-colors duration-300"
+                >
+                    Iniciar Jogo
+                </button>
+            )}
+
+            {showVictory && (
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
+                    text-center bg-gray-800/90 p-8 rounded-xl border border-purple-500 shadow-xl">
+                    <h2 className="text-2xl font-bold text-purple-400 mb-4">Parabéns!</h2>
+                    <p className="text-gray-200 mb-6">Você destruiu 5 meteoros!</p>
+                    <button
+                        onClick={startGame}
+                        className="px-4 py-2 bg-purple-600 text-white rounded-lg 
+                            hover:bg-purple-700 transition-colors duration-300"
+                    >
+                        Jogar Novamente
+                    </button>
+                </div>
+            )}
+
+            {gameActive && (
+                <div className="absolute top-4 right-4 px-4 py-2 bg-gray-800/80 rounded-lg border border-purple-500/50">
+                    <span className="text-purple-400 font-medium">Meteoros: {score}/5</span>
+                </div>
             )}
 
             <style jsx>{`
@@ -499,6 +604,11 @@ export default function Historico() {
 
                 .animate-pulse-text {
                     animation: pulse-text 2s infinite;
+                }
+
+                .spaceship-container {
+                    position: relative;
+                    z-index: 10;
                 }
             `}</style>
         </section>

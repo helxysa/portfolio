@@ -38,7 +38,7 @@ export default function VSCodeSkills() {
                 </div>
             </div>
             
-            <div className="p-4 xs:p-5 sm:p-6 
+            <div className="p-4 xs:p-5 sm:p-6 pb-8 xs:pb-5 sm:pb-6
                 font-mono text-xs xs:text-sm sm:text-sm 
                 space-y-3 xs:space-y-4 sm:space-y-4 
                 overflow-y-auto
