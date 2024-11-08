@@ -1,101 +1,116 @@
-import Link from 'next/link';
-import TechCarousel from './TechCarousel';
+'use client'
+
+import Link from 'next/link'
+import VSCodeSkills from './VSCodeSkills'
+import TechCarousel from './TechCarousel'
 
 export default function Hero() {
+    const texts = {
+        pt: {
+            text1: 'Olá, eu sou',
+            text2: 'Heloysa',
+            text3: 'Desenvolvedora Front-End && Back-End em formação',
+            button: 'Entre em contato'
+        },
+        en: {
+            text1: 'Hi, I am',
+            text2: 'Heloysa',
+            text3: 'Front-End && Back-End Developer in the making',
+            button: 'Contact me'
+        }
+    }
+
     return (
-      <section className="min-h-screen flex flex-col items-center justify-center bg-gray-700">
-        <div className="container mx-auto px-6 py-24 md:py-32">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div>
-              <h1 className="text-4xl text-gray-100 md:text-6xl font-bold mb-4 animate-slideDown hover:text-purple-700 transform hover:scale-105 transition-all duration-300">
-                Olá, eu sou<br />
-              </h1>
-              <h1 className="text-4xl text-purple-700 md:text-6xl font-bold mb-4 animate-slideDown hover:text-gray-100 transform hover:scale-105 transition-all duration-300">
-                Heloysa<br />
-              </h1>
-              <p className="text-xl text-gray-100 mb-8 animate-slideLeft hover:text-purple-700 transform hover:scale-105 transition-all duration-300">
-                Desenvolvedora Front-End && Back-End em formação
-              </p>
-              <Link
-                href="#contact"
-                className="bg-purple-600 text-white px-8 py-3 rounded hover:bg-purple-700 transition"
-              >
-                Entre em contato
-              </Link>
+        <section className="min-h-[85vh] w-full flex flex-col items-start pt-32 justify-center bg-[#1e1e1e] relative overflow-hidden px-4 sm:px-6 lg:px-8">
+            <div className="absolute inset-0">
+                <div className="absolute inset-0 bg-gradient-to-b from-purple-900/5 to-transparent" />
+                <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-purple-500/5 rounded-full filter blur-3xl animate-pulse-slow" />
+                <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-purple-500/5 rounded-full filter blur-3xl animate-pulse-slow delay-700" />
             </div>
-            <div className="flex justify-center">
-              <VSCodeSkills />
-            </div>
-          </div>
-        </div>
-        <div className="w-full ">
-          <TechCarousel />
-        </div>
-      </section>
-    );
-  }
 
-  function VSCodeSkills() {
-    return (
-        <div className="relative w-full max-w-md h-[500px] bg-[#1e1e1e] rounded-lg shadow-[0_20px_50px_rgba(0,0,0,0.3)] 
-        overflow-hidden transform transition-all duration-300 ease-out hover:rotate-2 hover:scale-105 
-        hover:-translate-y-2 hover:shadow-[0_25px_60px_rgba(0,0,0,0.5)]">
-        <div className="bg-[#323233] p-2 flex items-center">
-          <div className="flex space-x-2">
-            <div className="w-3 h-3 rounded-full bg-red-500"></div>
-            <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-            <div className="w-3 h-3 rounded-full bg-green-500"></div>
-          </div>
-          <span className="ml-4 text-sm text-gray-400">skills.tsx</span>
-        </div>
-        
-        <div className="p-6 font-mono text-sm">
-          <div className="text-blue-400">const</div>
-          <div className="pl-4">
-            <span className="text-purple-400">skills</span>
-            <span className="text-white"> = {`{`}</span>
-          </div>
-          <div className="pl-8">
-            <div>
-              <span className="text-green-400">frontend:</span>
-              <span className="text-orange-300">{` ['React', 'Next.js', 'TailwindCSS'],`}</span>
-            </div>
-            <div>
-              <span className="text-green-400">backend:</span>
-              <span className="text-orange-300">{` ['Node.js', 'Python', 'Express'],`}</span>
-            </div>
-            <div>
-              <span className="text-green-400">database:</span>
-              <span className="text-orange-300">{` ['MongoDB', 'SQLite'],`}</span>
-            </div>
-            <div>
-              <span className="text-green-400">tools:</span>
-              <span className="text-orange-300">{` ['Git', 'VS Code']`}</span>
-            </div>
-            <div>
-              <span className="text-green-400">extra:</span>
-              <span className="text-orange-300">
-              {`{\n`}
-                <br/>
-                &nbsp;&nbsp;<span className="text-blue-400">image</span>
-                {`: ['Figma', 'GIMP'],\n`}  &nbsp;&nbsp; <br/> 
-                &nbsp;&nbsp;<span className="text-blue-400">games</span>
-                {`: ['GD', 'Godot', 'PyGame'],\n`} &nbsp;&nbsp;  
-                &nbsp;&nbsp;<span className="text-blue-400">mobile</span>
-                {`: ['React Native']\n`}
-                {`}`}
-              </span>
-            </div>
-          </div>
-          <div className="pl-4 text-white">{`}`}</div>
-        </div>
-      </div>
-    );
-  }
+            <div className="container mx-auto max-w-7xl">
+                <div className="animate-float">
+                    <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+                        <div className="space-y-6 md:space-y-8">
+                            <div className="relative bg-[#1e1e1e] rounded-xl shadow-2xl overflow-hidden hover:shadow-purple-500/20 transition-all duration-500">
+                                <div className="flex items-center gap-2 px-4 py-2 bg-[#3a3a3a] border-b border-[#4a4a4a]">
+                                    <div className="flex gap-2">
+                                        <div className="w-3 h-3 rounded-full bg-[#ff5f56]" />
+                                        <div className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
+                                        <div className="w-3 h-3 rounded-full bg-[#27c93f]" />
+                                        <span className="ml-4 sm:ml-5 text-xs sm:text-sm text-gray-400 font-mono tracking-wide">Profile.tsx</span>
+                                    </div>
+                                </div>
+                                
+                                <div className="p-6 md:p-8">
+                                    <div className="space-y-4 md:space-y-6">
+                                        <h1 className="text-balance">
+                                            <span className="block text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-white/80 font-light tracking-tight">
+                                                {texts.pt.text1}
+                                            </span>
+                                            <span className="block text-3xl sm:text-4xl md:text-5xl lg:text-6xl mt-2 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-600 font-bold tracking-tight">
+                                                {texts.pt.text2}
+                                            </span>
+                                        </h1>
+                                        
+                                        <p className="text-base sm:text-lg md:text-xl text-white/60 max-w-2xl leading-relaxed">
+                                            {texts.pt.text3}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
 
+                            <Link
+                                href="#contato"
+                                className="group inline-flex items-center justify-center px-5 py-2.5 
+                                text-sm md:text-base text-white bg-purple-600/90 rounded-lg
+                                transition-all duration-300 ease-out
+                                hover:bg-purple-600 hover:shadow-lg hover:shadow-purple-500/20
+                                focus:outline-none focus:ring-2 focus:ring-purple-500/50
+                                active:scale-[0.98]"
+                            >
+                                <span className="flex items-center">
+                                    {texts.pt.button}
+                                    <svg 
+                                        className="ml-2 w-4 h-4 transform transition-transform duration-300 group-hover:translate-x-0.5" 
+                                        fill="none" 
+                                        stroke="currentColor" 
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path 
+                                            strokeLinecap="round" 
+                                            strokeLinejoin="round" 
+                                            strokeWidth={2} 
+                                            d="M13 7l5 5m0 0l-5 5m5-5H6"
+                                        />
+                                    </svg>
+                                </span>
+                            </Link>
+                        </div>
 
-//   Olá! Sou estudante de Ciência da Computação na Universidade Federal do Amapá (UNIFAP) e tenho adquirido uma sólida base técnica, além de diversas experiências práticas na área de desenvolvimento.
-// Desde 2023 até 2024, atuei como monitora no Projeto de Extensão UNIFAP Digital, onde tive a oportunidade de ensinar desenvolvimento web para a comunidade de forma gratuita, lecionando aulas de HTML, CSS, JavaScript, React e Express.
-// Embora meu conhecimento seja mais voltado para a área de stack frontend, também tenho experiência na criação de APIs utilizando as mesmas tecnologias, como Express.js e ORMs como o Prisma e Sequelize. Além disso, também utilizo plataformas como Firebase e Supabase para projetos com foco somente no frontend. Fora isso, possuo conhecimento em frameworks como NextJS e Tailwind CSS, o que amplia ainda mais meu conjunto de habilidades.
-// Além do meu foco no desenvolvimento web, também realizo projetos pessoais envolvendo outras tecnologias, como React Native para desenvolvimento mobile e criação de jogos com a biblioteca GD. Essa diversidade de experiências me mantém constantemente atualizada e em busca de novos conhecimentos.
-// Estou sempre buscando me aprimorar e evoluir profissionalmente, com o objetivo de me tornar uma desenvolvedora cada vez mais qualificada e capaz de entregar soluções de alto nível.
+                        <div className="relative w-full max-w-xl mx-auto lg:mx-0">
+                            <div className="relative mt-8">
+                                <VSCodeSkills />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="mt-8 sm:mt-10 lg:mt-12">
+                    <TechCarousel />
+                </div>
+            </div>
+
+            <style jsx global>{`
+                @keyframes float {
+                    0%, 100% { transform: translateY(0) rotate(0deg); }
+                    50% { transform: translateY(-20px) rotate(1deg); }
+                }
+                
+                .animate-float {
+                    animation: float 6s ease-in-out infinite;
+                }
+            `}</style>
+        </section>
+    )
+}

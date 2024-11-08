@@ -46,6 +46,7 @@ const config: Config = {
       slideRight: 'slideRight 1s ease-out',
       slideUp: 'slideUp 1s ease-out',
       blink: 'blink 1.5s ease-in-out infinite',
+      cursor: "blink 1s infinite"
     },
   },
   plugins: [],
