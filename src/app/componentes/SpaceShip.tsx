@@ -34,7 +34,7 @@ export default function SpaceShip({ onHit, cardsRef, onMeteorHit }: SpaceShipPro
     })
 
     const checkIfMouseInSection = useCallback((mouseX: number, mouseY: number) => {
-        const section = document.getElementById('historico-section')
+        const section = document.getElementById('linha-do-tempo')
         if (!section) return false
 
         const rect = section.getBoundingClientRect()

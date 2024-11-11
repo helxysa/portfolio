@@ -15,7 +15,12 @@ export const translations = {
       terminal: "terminal@heloysa:~",
       github: "github",
       skills: "habilidades",
-      contact: "contato"
+      contact: "contato",
+      languageSelector: {
+        title: 'escolher_idioma',
+        select: 'selecionar',
+        close: 'sair'
+      }
     },
     projects: {
       title: 'Meus Projetos',
@@ -176,7 +181,12 @@ export const translations = {
       terminal: "terminal@heloysa:~",
       github: "github",
       skills: "skills",
-      contact: "contact"
+      contact: "contact",
+      languageSelector: {
+        title: 'select_language',
+        select: 'to select',
+        close: 'to close'
+      }
     },
     projects: {
       title: 'My Projects',

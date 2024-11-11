@@ -5,50 +5,20 @@ export default function VSCodeSkills() {
     const { t, currentLanguage } = useLanguage();
 
     return (
-        <div className="relative w-full max-w-[300px] xs:max-w-[340px] sm:max-w-[320px] md:max-w-[380px] 
-            h-[380px] xs:h-[400px] sm:h-[420px] md:h-[440px] 
-            bg-gradient-to-br from-[#1e1e1e] to-[#212121]
-            dark:from-[#1e1e1e] dark:to-[#212121]
-            rounded-lg 
-            overflow-hidden transform 
-            transition-all duration-300 ease-in-out 
-            hover:rotate-1 hover:scale-[1.02] hover:-translate-y-1 
-            shadow-[0_2px_10px_rgba(0,0,0,0.08)] 
-            mx-auto my-4 md:my-6">
+        <div className="relative w-full max-w-[300px] xs:max-w-[340px] sm:max-w-[320px] md:max-w-[380px] h-[380px] xs:h-[400px] sm:h-[420px] md:h-[440px] bg-gradient-to-br from-[#1e1e1e] to-[#212121] dark:from-[#1e1e1e] dark:to-[#212121] rounded-lg overflow-hidden transition-all duration-500 ease-out hover:shadow-2xl hover:shadow-purple-500/20 hover:scale-[1.02] hover:bg-[#1e1e1e]/80 hover:border hover:border-purple-500/20 before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-purple-500/5 before:to-transparent before:translate-x-[-200%] hover:before:translate-x-[200%] before:transition-transform before:duration-1000 group mx-auto my-4 md:my-6">
             
-            <div className="bg-gradient-to-r from-[#2b2b2b] to-[#323233] 
-                p-2 xs:p-2.5 sm:p-3 
-                flex items-center justify-between 
-                border-b border-gray-800/30
-                shadow-sm">
+            <div className="bg-gradient-to-r from-[#2b2b2b] to-[#323233] p-2 xs:p-2.5 sm:p-3 flex items-center justify-between border-b border-gray-800/30 group-hover:bg-[#2a2a2a] transition-colors duration-500 shadow-sm">
                 <div className="flex items-center">
                     <div className="flex space-x-2 xs:space-x-2.5">
-                        <div className="w-2 h-2 xs:w-2.5 xs:h-2.5 sm:w-3 sm:h-3 
-                            rounded-full bg-red-500 hover:bg-red-400 
-                            transition-all duration-200 
-                            shadow-inner hover:shadow-red-500/20"></div>
-                        <div className="w-2 h-2 xs:w-2.5 xs:h-2.5 sm:w-3 sm:h-3 
-                            rounded-full bg-yellow-500 hover:bg-yellow-400 
-                            transition-all duration-200 
-                            shadow-inner hover:shadow-yellow-500/20"></div>
-                        <div className="w-2 h-2 xs:w-2.5 xs:h-2.5 sm:w-3 sm:h-3 
-                            rounded-full bg-green-500 hover:bg-green-400 
-                            transition-all duration-200 
-                            shadow-inner hover:shadow-green-500/20"></div>
+                        <div className="w-2 h-2 xs:w-2.5 xs:h-2.5 sm:w-3 sm:h-3 rounded-full bg-red-500 group-hover:animate-pulse transition-all duration-200"></div>
+                        <div className="w-2 h-2 xs:w-2.5 xs:h-2.5 sm:w-3 sm:h-3 rounded-full bg-yellow-500 group-hover:animate-pulse transition-all duration-200"></div>
+                        <div className="w-2 h-2 xs:w-2.5 xs:h-2.5 sm:w-3 sm:h-3 rounded-full bg-green-500 group-hover:animate-pulse transition-all duration-200"></div>
                     </div>
-                    <span className="ml-4 xs:ml-5 
-                        text-xs xs:text-sm sm:text-sm 
-                        text-gray-400 font-mono 
-                        tracking-wide">{t('skills.fileName')}</span>
+                    <span className="ml-4 xs:ml-5 text-xs xs:text-sm sm:text-sm text-gray-400 font-mono group-hover:text-purple-300 transition-colors duration-500 tracking-wide">{t('skills.fileName')}</span>
                 </div>
             </div>
             
-            <div className="p-3 xs:p-4 sm:p-5 pb-6 xs:pb-4 sm:pb-5
-                font-mono text-[11px] xs:text-xs sm:text-sm 
-                space-y-2 xs:space-y-3 sm:space-y-4 
-                overflow-y-auto
-                h-[calc(100%-2.5rem)]
-                bg-gradient-to-b from-transparent via-[#1e1e1e]/50 to-[#1e1e1e]/80">
+            <div className="p-3 xs:p-4 sm:p-5 pb-6 xs:pb-4 sm:pb-5 font-mono text-[11px] xs:text-xs sm:text-sm space-y-2 xs:space-y-3 sm:space-y-4 overflow-y-auto h-[calc(100%-2.5rem)] bg-gradient-to-b from-transparent via-[#1e1e1e]/50 to-[#1e1e1e]/80">
                 <div className="pl-2 xs:pl-4">
                     <span className="text-purple-400/90 font-medium">
                         <span className="text-blue-400/90">const</span> {currentLanguage === 'pt' ? 'habilidades' : 'skills'}

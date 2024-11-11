@@ -78,14 +78,14 @@ const LoadingAnimation = () => {
   }
 
   return (
-    <div className="flex items-center justify-center py-8">
+    <div className="flex items-center justify-center py-4 sm:py-8">
       <div className="text-center">
-        <div className="relative w-48 h-48 mx-auto mb-6">
+        <div className="relative w-48 sm:w-48 md:w-56 lg:w-64 h-48 sm:h-48 md:h-56 lg:h-64 mx-auto mb-4 sm:mb-6">
           
 
           <div className="absolute bottom-0 w-full h-6 bg-gray-700 shadow-lg rounded-t-lg" />
           
-          <div className={`absolute bottom-12 left-1/2 transform -translate-x-1/2 w-40 h-28 bg-gray-800 border-4 border-gray-700 rounded-lg shadow-lg ${!isTyping ? 'monitor-shake' : ''}`}>
+          <div className={`absolute bottom-12 left-1/2 transform -translate-x-1/2 w-40 sm:w-40 md:w-48 lg:w-56 h-28 sm:h-28 md:h-32 lg:h-36 bg-gray-800 border-4 border-gray-700 rounded-lg shadow-lg ${!isTyping ? 'monitor-shake' : ''}`}>
             <div className={`w-full h-full bg-[#1E1E1E] pixel-art rounded-sm ${!isTyping ? 'screen-flicker' : ''}`}>
               <div className="w-full h-full flex flex-col">
                 <div className={!isTyping ? 'hidden' : ''}>
@@ -117,7 +117,6 @@ const LoadingAnimation = () => {
                       <span className="text-white text-[10px]">{'}'}</span>
                     </div>
                     <div className="flex items-center mt-0.5">
-                      <span className="text-gray-500 text-[10px] mr-1">6</span>
                       <div className="w-[180px] overflow-hidden">
                         {getColoredText()}
                       </div>
@@ -132,11 +131,11 @@ const LoadingAnimation = () => {
             </div>
           </div>
           
-          <div className={`absolute bottom-6 left-1/2 transform -translate-x-1/2 w-12 h-6 bg-gray-700 rounded-lg shadow-md ${!isTyping ? 'monitor-shake' : ''}`}>
+          <div className={`absolute bottom-6 left-1/2 transform -translate-x-1/2 w-12 sm:w-12 md:w-14 lg:w-16 h-6 sm:h-6 md:h-7 lg:h-8 bg-gray-700 rounded-lg shadow-md ${!isTyping ? 'monitor-shake' : ''}`}>
             <div className="absolute bottom-0 w-16 h-2 bg-gray-600 left-1/2 transform -translate-x-1/2 rounded-lg" />
           </div>
           
-          <div className={`absolute bottom-16 left-[80%] transform -translate-x-1/2 ${isTyping ? 'typing-animation' : 'frustrated-animation'}`}>
+          <div className={`absolute bottom-16 left-[80%] transform -translate-x-1/2 scale-90 sm:scale-90 md:scale-100 lg:scale-110 ${isTyping ? 'typing-animation' : 'frustrated-animation'}`}>
             <div className={`w-20 h-20 rounded-full relative shadow-md head ${isTyping ? 'bg-yellow-200' : 'bg-red-500'}`}>
               <div className="absolute top-4 left-1/2 transform -translate-x-1/2 w-16 flex items-center">
                 <div className="absolute w-3 h-1.5 bg-black top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
@@ -167,8 +166,8 @@ const LoadingAnimation = () => {
           </div>
         </div>
         
-        <p className="text-white loading-text text-lg font-bold">{currentMessage}</p>
-        <p className="text-gray-400 loading-text text-sm mt-2">{currentSubMessage}</p>
+        <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-white loading-text font-bold">{currentMessage}</p>
+        <p className="text-xs sm:text-sm md:text-base text-gray-400 loading-text mt-2">{currentSubMessage}</p>
       </div>
     </div>
   );

@@ -38,8 +38,73 @@ const config: Config = {
         '0%': { transform: 'translateY(100%)', opacity: '0' },
         '100%': { transform: 'translateY(0)', opacity: '1' },
       },
+      'fade-in-up': {
+          '0%': {
+            opacity: '0',
+            transform: 'translateY(20px)'
+          },
+          '100%': {
+            opacity: '1',
+            transform: 'translateY(0)'
+          }
+        },
+        'fade-in-left': {
+          '0%': {
+            opacity: '0',
+            transform: 'translateX(-20px)'
+          },
+          '100%': {
+            opacity: '1',
+            transform: 'translateX(0)'
+          }
+        },
+        'fade-in-scale': {
+          '0%': {
+            opacity: '0',
+            transform: 'scale(0.95)'
+          },
+          '100%': {
+            opacity: '1',
+            transform: 'scale(1)'
+          },
+          
+        },
+        'gradient-xy': {
+          '0%, 100%': {
+            'background-size': '400% 400%',
+            'background-position': 'left center'
+          },
+          '50%': {
+            'background-size': '200% 200%',
+            'background-position': 'right center'
+          }
+        },
+        float1: {
+          '0%, 100%': { transform: 'translate(0, 0)' },
+          '50%': { transform: 'translate(10px, 10px)' }
+        },
+        float2: {
+          '0%, 100%': { transform: 'translate(0, 0)' },
+          '50%': { transform: 'translate(-10px, -10px)' }
+        },
+        float3: {
+          '0%, 100%': { transform: 'translate(0, 0)' },
+          '50%': { transform: 'translate(8px, -8px)' }
+        },
+        float4: {
+          '0%, 100%': { transform: 'translate(0, 0)' },
+          '50%': { transform: 'translate(-8px, 8px)' }
+        }
     },
     animation: {
+      'gradient-xy': 'gradient-xy 15s ease infinite',
+      'float-1': 'float1 4s ease-in-out infinite',
+      'float-2': 'float2 4s ease-in-out infinite',
+      'float-3': 'float3 4s ease-in-out infinite',
+      'float-4': 'float4 4s ease-in-out infinite',
+      'fade-in-up': 'fade-in-up 0.6s ease-out forwards',
+      'fade-in-left': 'fade-in-left 0.8s ease-out forwards',
+      'fade-in-scale': 'fade-in-scale 0.5s ease-out forwards',
       fadeIn: 'fadeIn 1s ease-in',
       slideDown: 'slideDown 1s ease-out',
       slideLeft: 'slideLeft 1s ease-out',

@@ -15,7 +15,7 @@ export default function Hero() {
     }, []);
 
     if (!mounted) {
-        return null; // ou um skeleton/loading state
+        return null; 
     }
 
     return (
@@ -31,30 +31,32 @@ export default function Hero() {
                 <div className="animate-float">
                     <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
                         <div className="space-y-6 md:space-y-8">
-                            <div className="relative bg-[#1e1e1e] rounded-xl shadow-2xl overflow-hidden hover:shadow-purple-500/20 transition-all duration-500">
-                                <div className="flex items-center gap-2 px-4 py-2 bg-[#3a3a3a] border-b border-[#4a4a4a]">
-                                    <div className="flex gap-2">
-                                        <div className="w-3 h-3 rounded-full bg-[#ff5f56]" />
-                                        <div className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
-                                        <div className="w-3 h-3 rounded-full bg-[#27c93f]" />
-                                        <span className="ml-4 sm:ml-5 text-xs sm:text-sm text-gray-400 font-mono tracking-wide">
+                            <div className="relative bg-[#1e1e1e] rounded-xl shadow-2xl overflow-hidden hover:shadow-purple-500/20 hover:shadow-2xl hover:scale-[1.02] hover:bg-[#1e1e1e]/80 hover:border hover:border-purple-500/20 transition-all duration-500 ease-out before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-purple-500/5 before:to-transparent before:translate-x-[-200%] hover:before:translate-x-[200%] before:transition-transform before:duration-1000 group">
+                                <div className="flex items-center px-4 py-2 bg-[#3a3a3a] border-b border-[#4a4a4a] group-hover:bg-[#2a2a2a] transition-colors duration-500">
+                                    <div className="flex items-center gap-2">
+                                        <div className="flex gap-2">
+                                            <div className="w-3 h-3 rounded-full bg-[#ff5f56] group-hover:animate-pulse" />
+                                            <div className="w-3 h-3 rounded-full bg-[#ffbd2e] group-hover:animate-pulse" />
+                                            <div className="w-3 h-3 rounded-full bg-[#27c93f] group-hover:animate-pulse" />
+                                        </div>
+                                        <span className="ml-2 text-xs sm:text-sm text-gray-400 font-mono tracking-wide group-hover:text-purple-300 transition-colors duration-500">
                                             {t('hero.fileName')}
                                         </span>
                                     </div>
                                 </div>
                                 
-                                <div className="p-6 md:p-8">
+                                <div className="p-6 md:p-8 relative">
                                     <div className="space-y-4 md:space-y-6">
                                         <h1>
-                                            <span className="block text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-white/80 font-light tracking-tight">
+                                            <span className="block text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-white/80 font-light tracking-tight opacity-0 animate-[fade-in-up_0.6s_ease-out_forwards] hover:text-white hover:scale-105 transition-all duration-200 ease-in-out cursor-pointer">
                                                 {t('hero.greeting')}
                                             </span>
-                                            <span className="block text-3xl pb-4 sm:text-4xl md:text-5xl lg:text-6xl mt-2 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-600 font-bold tracking-tight">
+                                            <span className="block text-3xl pb-4 sm:text-4xl md:text-5xl lg:text-6xl mt-2 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-600 font-bold tracking-tight opacity-0 animate-[fade-in-left_0.8s_ease-out_0.3s_forwards] hover:from-purple-300 hover:to-purple-500 hover:scale-105 transition-all duration-200 ease-in-out cursor-pointer">
                                                 {t('hero.name')}
                                             </span>
                                         </h1>
                                         
-                                        <p className="text-base sm:text-lg md:text-xl text-white/60 max-w-2xl leading-relaxed">
+                                        <p className="text-base sm:text-lg md:text-xl text-white/60 max-w-2xl leading-relaxed opacity-0 animate-[fade-in-scale_0.5s_ease-out_0.6s_forwards] hover:text-white hover:scale-105 transition-all duration-200 ease-in-out cursor-pointer">
                                             {t('hero.role')}
                                         </p>
                                     </div>

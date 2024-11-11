@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`antialiased mb-10 `}
+        className={`antialiased mb-10 bg-gray-900 `}
         suppressHydrationWarning
       >
         <LanguageProvider>
