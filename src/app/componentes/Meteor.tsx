@@ -18,28 +18,40 @@ export default function Meteor({ x, y, speed, onDestroy, onEscape }: MeteorProps
         if (!meteor) return
 
         let currentY = y
+        let rotation = Math.random() * 360
+        
         const moveInterval = setInterval(() => {
-            currentY += speed   
-            meteor.style.top = `${currentY}px`
+            currentY += speed
+            rotation += 2
             
-            // Se o meteoro sair da tela
+            if (meteor) {
+                meteor.style.top = `${currentY}px`
+                meteor.style.transform = `translate(-50%, -50%) rotate(${rotation}deg)`
+            }
+            
+            // Verifica se o meteoro saiu da tela
             if (currentY > window.innerHeight) {
                 onEscape()
                 clearInterval(moveInterval)
             }
         }, 16)
 
+        // Cleanup
         return () => clearInterval(moveInterval)
     }, [y, speed, onEscape])
 
     return (
         <div
             ref={meteorRef}
-            className="meteor absolute transform -translate-x-1/2 -translate-y-1/2"
-            style={{ left: `${x}px`, top: `${y}px` }}
+            className="meteor absolute"
+            style={{ 
+                left: `${x}px`, 
+                top: `${y}px`,
+                transition: 'transform 0.1s ease'
+            }}
         >
             <Image
-                src="/images/meteor.png" // Você precisará adicionar esta imagem
+                src="/images/meteor.png"
                 alt="Meteor"
                 width={40}
                 height={40}
@@ -48,7 +60,8 @@ export default function Meteor({ x, y, speed, onDestroy, onEscape }: MeteorProps
             
             <style jsx>{`
                 .meteor {
-                    transition: transform 0.3s ease;
+                    will-change: transform;
+                    z-index: 100;
                 }
                 .meteor-image {
                     filter: drop-shadow(0 0 8px rgba(255, 87, 51, 0.7));

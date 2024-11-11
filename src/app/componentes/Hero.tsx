@@ -44,7 +44,7 @@ export default function Hero() {
                                 
                                 <div className="p-6 md:p-8">
                                     <div className="space-y-4 md:space-y-6">
-                                        <h1 className="text-balance">
+                                        <h1>
                                             <span className="block text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-white/80 font-light tracking-tight">
                                                 {texts.pt.text1}
                                             </span>

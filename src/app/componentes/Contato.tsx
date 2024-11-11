@@ -4,7 +4,6 @@ import LoadingAnimation from './Loading'
 export default function Contato() {
     return (
         <section className="w-full min-h-screen flex flex-col justify-center bg-gradient-to-t from-gray-900 to-[#1e1e1e] relative" id="contato">
-            {/* Background com estrelas e poeira espacial */}
             <div className="stars absolute inset-0" />
             <div className="space-dust absolute inset-0" />
             

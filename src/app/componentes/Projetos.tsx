@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay, Navigation, Pagination, EffectCoverflow } from 'swiper/modules'
 import Image from 'next/image'
@@ -75,7 +75,15 @@ const projetos = [
 
 export default function Projetos() {
     const [stackSelecionada, setStackSelecionada] = useState('Todos')
+    const [expandedCard, setExpandedCard] = useState<number | null>(null)
     const [mostrarTodos, setMostrarTodos] = useState(false)
+    const [isMobile, setIsMobile] = useState(false)
+    const [activeIndex, setActiveIndex] = useState(0)
+    const sliderRef = useRef<HTMLDivElement>(null)
+    const [isDragging, setIsDragging] = useState(false)
+    const [startX, setStartX] = useState(0)
+    const [scrollLeft, setScrollLeft] = useState(0)
+    const [isTransitioning, setIsTransitioning] = useState(false)
 
     const stacks = ['Todos', ...new Set(projetos.flatMap(projeto => projeto.stack))]
 
@@ -83,7 +91,126 @@ export default function Projetos() {
         stackSelecionada === 'Todos' || projeto.stack.includes(stackSelecionada)
     )
 
-    const projetosExibidos = projetosFiltrados
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth <= 768)
+        }
+
+        handleResize()
+        window.addEventListener('resize', handleResize)
+        return () => window.removeEventListener('resize', handleResize)
+    }, [])
+
+    const handleScroll = useCallback(() => {
+        if (sliderRef.current) {
+            const scrollLeft = sliderRef.current.scrollLeft
+            const slideWidth = sliderRef.current.clientWidth
+            const newIndex = Math.round(scrollLeft / slideWidth)
+            
+            if (newIndex >= 0 && newIndex <= 2) {
+                setActiveIndex(newIndex)
+            }
+        }
+    }, [])
+
+    useEffect(() => {
+        const slider = sliderRef.current
+        if (!slider) return
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        const slideIndex = Number(entry.target.getAttribute('data-index'))
+                        setActiveIndex(slideIndex)
+                    }
+                })
+            },
+            {
+                root: slider,
+                threshold: 0.5
+            }
+        )
+
+        const slides = slider.querySelectorAll('.slide-item')
+        slides.forEach((slide) => observer.observe(slide))
+
+        slider.addEventListener('scroll', handleScroll, { passive: true })
+
+        return () => {
+            slides.forEach((slide) => observer.unobserve(slide))
+            slider.removeEventListener('scroll', handleScroll)
+        }
+    }, [handleScroll])
+
+    const handleMouseDown = (e: React.MouseEvent) => {
+        setIsDragging(true)
+        setStartX(e.pageX - (sliderRef.current?.offsetLeft || 0))
+        setScrollLeft(sliderRef.current?.scrollLeft || 0)
+    }
+
+    const handleMouseLeave = () => {
+        setIsDragging(false)
+    }
+
+    const handleMouseUp = () => {
+        setIsDragging(false)
+    }
+
+    const handleMouseMove = (e: React.MouseEvent) => {
+        if (!isDragging) return
+        e.preventDefault()
+        const x = e.pageX - (sliderRef.current?.offsetLeft || 0)
+        const walk = (x - startX) * 2
+        if (sliderRef.current) {
+            sliderRef.current.scrollLeft = scrollLeft - walk
+        }
+    }
+
+    const handleTouchStart = (e: React.TouchEvent) => {
+        setIsDragging(true)
+        setStartX(e.touches[0].pageX - (sliderRef.current?.offsetLeft || 0))
+        setScrollLeft(sliderRef.current?.scrollLeft || 0)
+    }
+
+    const handleTouchMove = (e: React.TouchEvent) => {
+        if (!isDragging) return
+        const x = e.touches[0].pageX - (sliderRef.current?.offsetLeft || 0)
+        const walk = (x - startX) * 2
+        if (sliderRef.current) {
+            sliderRef.current.scrollLeft = scrollLeft - walk
+        }
+    }
+
+    const handleToggleMostrar = () => {
+        if (isTransitioning) return;
+        
+        setIsTransitioning(true);
+        setMostrarTodos(prev => !prev);
+        setExpandedCard(null);
+        
+        setTimeout(() => {
+            setIsTransitioning(false);
+        }, 300);
+    };
+
+    useEffect(() => {
+        setExpandedCard(null);
+        setMostrarTodos(false);
+        setActiveIndex(0);
+        setIsTransitioning(false);
+        
+        if (sliderRef.current) {
+            sliderRef.current.scrollTo({
+                left: 0,
+                behavior: 'smooth'
+            });
+        }
+    }, [stackSelecionada]);
+
+    const projetosParaMostrar = mostrarTodos 
+        ? projetosFiltrados 
+        : projetosFiltrados.slice(0, 3)
 
     return (
         <section className="w-full py-8 sm:py-12 md:py-16 lg:py-20 bg-gradient-to-b from-[#1e1e1e] to-gray-900" id='projetos'>
@@ -113,7 +240,66 @@ export default function Projetos() {
             </div>
 
             <div className="max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8 pb-8 sm:pb-12 md:pb-16 lg:pb-20">
-                {!mostrarTodos ? (
+                {isMobile ? (
+                    <div className="space-y-8">
+                        <div className="grid grid-cols-1 gap-6 px-4">
+                            {projetosParaMostrar.map((projeto, index) => (
+                                <div 
+                                    key={index}
+                                    className="w-full max-w-[320px] mx-auto"
+                                >
+                                    <ProjetoCard 
+                                        projeto={projeto} 
+                                        index={index}
+                                        expandido={expandedCard === index}
+                                        onToggleExpand={() => setExpandedCard(expandedCard === index ? null : index)}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+
+                        {projetosFiltrados.length > 3 && (
+                            <div className="flex justify-center pt-4">
+                                <button
+                                    onClick={handleToggleMostrar}
+                                    disabled={isTransitioning}
+                                    className={`
+                                        group relative w-full max-w-[300px] px-6 py-3 
+                                        bg-gradient-to-r from-purple-600 to-purple-700 
+                                        text-white rounded-lg overflow-hidden
+                                        transition-all duration-300 
+                                        shadow-lg hover:shadow-xl hover:shadow-purple-600/50 
+                                        hover:-translate-y-0.5 active:translate-y-0
+                                        ${isTransitioning ? 'opacity-50 cursor-not-allowed' : ''}
+                                    `}
+                                >
+                                    <div className="absolute inset-0 bg-purple-800/50 transform origin-left 
+                                        scale-x-0 group-hover:scale-x-100 transition-transform duration-300"/>
+                                    <div className="relative flex items-center justify-center gap-2">
+                                        <span className="font-medium">
+                                            {mostrarTodos ? 'Mostrar Menos' : 'Mostrar Mais'}
+                                        </span>
+                                        <svg 
+                                            className={`w-4 h-4 transition-transform duration-300 ${
+                                                mostrarTodos ? 'rotate-180' : ''
+                                            }`}
+                                            fill="none" 
+                                            stroke="currentColor" 
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path 
+                                                strokeLinecap="round" 
+                                                strokeLinejoin="round" 
+                                                strokeWidth={2} 
+                                                d="M19 9l-7 7-7-7"
+                                            />
+                                        </svg>
+                                    </div>
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                ) : (
                     <Swiper
                         modules={[Autoplay, Navigation, Pagination, EffectCoverflow]}
                         effect={'coverflow'}
@@ -128,27 +314,6 @@ export default function Projetos() {
                             slideShadows: false,
                         }}
                         breakpoints={{
-                            320: {
-                                slidesPerView: 1,
-                                spaceBetween: 8,
-                                centeredSlides: true
-                            },
-                            375: {
-                                slidesPerView: 1.1,
-                                spaceBetween: 10
-                            },
-                            425: {
-                                slidesPerView: 1.2,
-                                spaceBetween: 12
-                            },
-                            480: {
-                                slidesPerView: 1.2,
-                                spaceBetween: 15
-                            },
-                            640: {
-                                slidesPerView: 1.5,
-                                spaceBetween: 20
-                            },
                             768: {
                                 slidesPerView: 2,
                                 spaceBetween: 25
@@ -163,54 +328,38 @@ export default function Projetos() {
                             }
                         }}
                         navigation
-                        pagination={{ clickable: true }}
+                        pagination={{ 
+                            clickable: true,
+                            bulletActiveClass: 'swiper-pagination-bullet-active !bg-purple-600',
+                            bulletClass: 'swiper-pagination-bullet !bg-gray-400 !opacity-100 hover:!bg-purple-400'
+                        }}
                         className="!overflow-visible !pt-4 !pb-8 sm:!pt-6 sm:!pb-10 md:!pt-8 md:!pb-12"
                     >
-                        {projetosExibidos.map((projeto, index) => (
+                        {projetosFiltrados.map((projeto, index) => (
                             <SwiperSlide key={index} className="!w-[260px] xs:!w-[280px] sm:!w-[320px] md:!w-[380px]">
-                                <ProjetoCard projeto={projeto} index={index} />
+                                <ProjetoCard 
+                                    projeto={projeto} 
+                                    index={index}
+                                    expandido={expandedCard === index}
+                                    onToggleExpand={() => setExpandedCard(expandedCard === index ? null : index)}
+                                />
                             </SwiperSlide>
                         ))}
                     </Swiper>
-                ) : (
-                    <div className="grid grid-cols-1 gap-4 sm:gap-6 md:gap-8 
-                        sm:grid-cols-2 
-                        lg:grid-cols-3 
-                        [&>*]:w-full [&>*]:mx-auto [&>*]:max-w-[400px]"
-                    >
-                        {projetosExibidos.map((projeto, index) => (
-                            <div key={index}>
-                                <ProjetoCard projeto={projeto} index={index} />
-                            </div>
-                        ))}
-                    </div>
                 )}
-
-                <div className="flex justify-center mt-8 sm:mt-10 md:mt-12">
-                    <button
-                        onClick={() => setMostrarTodos(!mostrarTodos)}
-                        className="w-full sm:w-auto px-6 py-3 
-                            bg-gradient-to-r from-purple-600 to-purple-700 
-                            text-white rounded-lg 
-                            hover:from-purple-700 hover:to-purple-800 
-                            transition-all duration-300 
-                            shadow-lg hover:shadow-xl hover:shadow-purple-600/50 
-                            text-sm sm:text-base font-medium
-                            border border-purple-500/20
-                            hover:-translate-y-0.5 active:translate-y-0
-                            max-w-[300px]"
-                    >
-                        {mostrarTodos ? 'Mostrar Menos' : 'Mostrar Todos'}
-                    </button>
-                </div>
             </div>
         </section>
     )
 }
 
-const ProjetoCard = ({ projeto, index }: { projeto: Projeto, index: number }) => {
-    const [expandido, setExpandido] = useState(false);
+interface ProjetoCardProps {
+    projeto: Projeto;
+    index: number;
+    expandido: boolean;
+    onToggleExpand: () => void;
+}
 
+const ProjetoCard = ({ projeto, index, expandido, onToggleExpand }: ProjetoCardProps) => {
     const handleCardClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.stopPropagation();
         
@@ -220,7 +369,7 @@ const ProjetoCard = ({ projeto, index }: { projeto: Projeto, index: number }) =>
             return;
         }
 
-        setExpandido(!expandido);
+        onToggleExpand();
     };
 
     return (

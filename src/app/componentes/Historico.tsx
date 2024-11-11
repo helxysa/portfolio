@@ -3,7 +3,6 @@ import { useEffect, useState, useRef, useCallback } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation, Pagination } from 'swiper/modules'
 import SpaceShip from './SpaceShip'
-import Meteor from './Meteor'
 
 import 'swiper/css'
 import 'swiper/css/navigation'
@@ -64,10 +63,7 @@ export default function Historico() {
     const [expandedCard, setExpandedCard] = useState<number | null>(null)
     const [spaceshipEnabled, setSpaceshipEnabled] = useState(true)
     const [showPulse, setShowPulse] = useState(true)
-    const [meteors, setMeteors] = useState<Array<{ id: number; x: number; y: number; speed: number }>>([])
-    const [score, setScore] = useState(0)
-    const [gameActive, setGameActive] = useState(false)
-    const [showVictory, setShowVictory] = useState(false)
+    const [isShooting, setIsShooting] = useState(false)
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -131,47 +127,6 @@ export default function Historico() {
         }
     }, [])
 
-    const startGame = useCallback(() => {
-        setGameActive(true)
-        setScore(0)
-        setShowVictory(false)
-    }, [])
-
-    const spawnMeteor = useCallback(() => {
-        if (!gameActive) return
-        
-        const newMeteor = {
-            id: Date.now(),
-            x: Math.random() * window.innerWidth,
-            y: -50,
-            speed: 2 + Math.random() * 2
-        }
-        
-        setMeteors(prev => [...prev, newMeteor])
-    }, [gameActive])
-
-    useEffect(() => {
-        if (gameActive && meteors.length < 3) {
-            const spawnInterval = setInterval(spawnMeteor, 2000)
-            return () => clearInterval(spawnInterval)
-        }
-    }, [gameActive, meteors.length, spawnMeteor])
-
-    const handleMeteorDestroy = useCallback(() => {
-        setScore(prev => {
-            const newScore = prev + 1
-            if (newScore >= 5) {
-                setGameActive(false)
-                setShowVictory(true)
-            }
-            return newScore
-        })
-    }, [])
-
-    const handleMeteorEscape = useCallback((meteorId: number) => {
-        setMeteors(prev => prev.filter(meteor => meteor.id !== meteorId))
-    }, [])
-
     return (
         <section 
             ref={sectionRef} 
@@ -180,10 +135,27 @@ export default function Historico() {
         >
             {!isMobile && isVisible && spaceshipEnabled && (
                 <div className="spaceship-container">
-                    <SpaceShip onHit={handleHit} cardsRef={cardsRef} />
+                    <SpaceShip 
+                        onHit={handleHit} 
+                        cardsRef={cardsRef}
+                    />
                 </div>
             )}
-            
+
+            {!isMobile && spaceshipEnabled && (
+                <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50">
+                    <span className={`
+                        text-lg font-bold transition-all duration-300
+                        ${isShooting 
+                            ? 'text-purple-400 animate-pulse' 
+                            : 'text-gray-400/80 hover:text-purple-400/80'
+                        }
+                    `}>
+                        
+                    </span>
+                </div>
+            )}
+
             <div className="stars absolute inset-0" />
             <div className="space-dust absolute inset-0" />
             
@@ -197,59 +169,70 @@ export default function Historico() {
             <div className="relative max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 mt-8 sm:mt-16">
                 {isMobile ? (
                     <div className="flex flex-col gap-4">
-                        {items.map((item, index) => (
-                            <div
-                                key={index}
-                                ref={(el) => setCardRef(el, index)}
-                                className={`w-full transform transition-all duration-500 bg-gray-800/80 backdrop-blur-sm rounded-lg p-4 border border-gray-700/50 ${
-                                    item.isHit ? 'scale-105 rotate-1 animate-hit' : ''
-                                }`}
-                            >
-                                <div className="flex justify-between items-start mb-2">
-                                    <span className="text-purple-400 text-sm font-medium">
-                                        {item.ano}
-                                    </span>
-                                    <span className={`text-xs px-2 py-1 rounded-full ${
-                                        item.tipo === 'educacao' 
-                                            ? 'bg-blue-500/10 text-blue-400' 
-                                            : 'bg-green-500/10 text-green-400'
-                                    }`}>
-                                        {item.tipo}
-                                    </span>
-                                </div>
+                        {items.map((item, index) => {
+                            const isLongText = item.descricao.length > 150;
 
-                                <h3 className="text-white text-lg font-semibold mb-2">
-                                    {item.titulo}
-                                </h3>
-
-                                <p className={`text-sm text-gray-300 ${
-                                    expandedCard === index ? 'line-clamp-none' : 'line-clamp-2'
-                                }`}>
-                                    {item.descricao}
-                                </p>
-
-                                <button
-                                    onClick={() => setExpandedCard(expandedCard === index ? null : index)}
-                                    className={`mt-2 text-sm font-medium flex items-center gap-1 ${
-                                        expandedCard === index 
-                                            ? 'text-purple-400 hover:text-purple-300' 
-                                            : 'text-gray-400 hover:text-purple-400'
+                            return (
+                                <div
+                                    key={index}
+                                    ref={(el) => setCardRef(el, index)}
+                                    className={`w-full transform transition-all duration-500 bg-gray-800/80 backdrop-blur-sm rounded-lg p-4 border border-gray-700/50 ${
+                                        item.isHit ? 'scale-105 rotate-1 animate-hit' : ''
                                     }`}
                                 >
-                                    {expandedCard === index ? 'Ver menos' : 'Ver mais'}
-                                    <svg 
-                                        className={`w-4 h-4 transition-transform duration-300 ${
-                                            expandedCard === index ? 'rotate-180' : ''
-                                        }`} 
-                                        fill="none" 
-                                        stroke="currentColor" 
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                                    </svg>
-                                </button>
-                            </div>
-                        ))}
+                                    <div className="flex justify-between items-start mb-2">
+                                        <span className="text-purple-400 text-sm font-medium">
+                                            {item.ano}
+                                        </span>
+                                        <span className={`text-xs px-2 py-1 rounded-full ${
+                                            item.tipo === 'educacao' 
+                                                ? 'bg-blue-500/10 text-blue-400' 
+                                                : 'bg-green-500/10 text-green-400'
+                                        }`}>
+                                            {item.tipo}
+                                        </span>
+                                    </div>
+
+                                    <h3 className="text-white text-lg font-semibold mb-2">
+                                        {item.titulo}
+                                    </h3>
+
+                                    <p className={`text-sm text-gray-300 ${
+                                        isLongText ? (expandedCard === index ? 'line-clamp-none' : 'line-clamp-2') : ''
+                                    }`}>
+                                        {item.descricao}
+                                    </p>
+
+                                    {isLongText && (
+                                        <button
+                                            onClick={() => setExpandedCard(expandedCard === index ? null : index)}
+                                            className={`mt-2 text-sm font-medium flex items-center gap-1.5 w-full justify-center py-2 rounded-lg transition-all duration-300 ${
+                                                expandedCard === index 
+                                                    ? 'text-purple-400 bg-purple-500/10 border border-purple-500/20 hover:bg-purple-500/20' 
+                                                    : 'text-gray-400 bg-gray-500/10 border border-gray-500/20 hover:bg-gray-500/20 hover:text-purple-400'
+                                            }`}
+                                        >
+                                            {expandedCard === index ? 'Ver menos' : 'Ver mais'}
+                                            <svg 
+                                                className={`w-4 h-4 transition-transform duration-300 ${
+                                                    expandedCard === index ? 'rotate-180' : ''
+                                                }`} 
+                                                fill="none" 
+                                                stroke="currentColor" 
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path 
+                                                    strokeLinecap="round" 
+                                                    strokeLinejoin="round" 
+                                                    strokeWidth={2} 
+                                                    d="M19 9l-7 7-7-7"
+                                                />
+                                            </svg>
+                                        </button>
+                                    )}
+                                </div>
+                            );
+                        })}
                     </div>
                 ) : (
                     <Swiper
@@ -300,7 +283,11 @@ export default function Historico() {
                             }
                         }}
                         navigation
-                        pagination={{ clickable: true }}
+                        pagination={{ 
+                            clickable: true,
+                            bulletActiveClass: 'swiper-pagination-bullet-active !bg-purple-600',
+                            bulletClass: 'swiper-pagination-bullet !bg-gray-400 !opacity-100 hover:!bg-purple-400'
+                        }}
                         className="!overflow-visible !pt-0 !pb-8 sm:!pt-6 sm:!pb-12"
                     >
                         <div className="swiper-wrapper">
@@ -389,12 +376,21 @@ export default function Historico() {
                 )}
             </div>
 
-            {/* Instrução de tiro - adicionada aqui */}
-            <div className="text-center mt-4 text-gray-400/50 text-sm font-medium">
-                Aperte W para atirar
-            </div>
+            {!isMobile && (
+                <div className="text-center mt-4">
+                    <span className={`
+                        text-lg font-bold transition-all duration-300
+                        ${isShooting 
+                            ? 'text-purple-400 animate-pulse' 
+                            : 'text-gray-400/80 hover:text-purple-400/80'
+                        }
+                    `}>
+                        {isShooting ? 'Pew...' : 'Aperte W para atirar'}
+                    </span>
+                </div>
+            )}
 
-            {/* Botão de toggle da spaceship - ajustado para telas maiores */}
+            {/* Botão de toggle da spaceship */}
             {!isMobile && (
                 <button
                     onClick={() => setSpaceshipEnabled(!spaceshipEnabled)}
@@ -424,49 +420,6 @@ export default function Historico() {
                         )}
                     </div>
                 </button>
-            )}
-
-            {!isMobile && gameActive && meteors.map(meteor => (
-                <Meteor
-                    key={meteor.id}
-                    x={meteor.x}
-                    y={meteor.y}
-                    speed={meteor.speed}
-                    onDestroy={() => handleMeteorDestroy()}
-                    onEscape={() => handleMeteorEscape(meteor.id)}
-                />
-            ))}
-
-            {!isMobile && !gameActive && !showVictory && (
-                <button
-                    onClick={startGame}
-                    className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
-                        px-6 py-3 bg-purple-600 text-white rounded-lg shadow-lg 
-                        hover:bg-purple-700 transition-colors duration-300"
-                >
-                    Iniciar Jogo
-                </button>
-            )}
-
-            {showVictory && (
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
-                    text-center bg-gray-800/90 p-8 rounded-xl border border-purple-500 shadow-xl">
-                    <h2 className="text-2xl font-bold text-purple-400 mb-4">Parabéns!</h2>
-                    <p className="text-gray-200 mb-6">Você destruiu 5 meteoros!</p>
-                    <button
-                        onClick={startGame}
-                        className="px-4 py-2 bg-purple-600 text-white rounded-lg 
-                            hover:bg-purple-700 transition-colors duration-300"
-                    >
-                        Jogar Novamente
-                    </button>
-                </div>
-            )}
-
-            {gameActive && (
-                <div className="absolute top-4 right-4 px-4 py-2 bg-gray-800/80 rounded-lg border border-purple-500/50">
-                    <span className="text-purple-400 font-medium">Meteoros: {score}/5</span>
-                </div>
             )}
 
             <style jsx>{`
@@ -503,12 +456,8 @@ export default function Historico() {
                 }
 
                 @keyframes shine {
-                    from {
-                        transform: translateX(-100%);
-                    }
-                    to {
-                        transform: translateX(100%);
-                    }
+                    from { transform: translateX(-100%); }
+                    to { transform: translateX(100%); }
                 }
 
                 .animate-shine {
@@ -531,79 +480,12 @@ export default function Historico() {
                     }
                 }
 
-                @keyframes flash {
-                    0% { opacity: 1; }
-                    100% { opacity: 0; }
-                }
-
                 .animate-hit {
                     animation: hit 1s ease-in-out;
                 }
 
                 .animate-card-hit {
                     animation: card-hit 1s ease-in-out;
-                }
-
-                .animate-flash {
-                    animation: flash 1s ease-out;
-                }
-
-                .timeline-line {
-                    position: relative;
-                    overflow: hidden;
-                }
-
-                .timeline-line::after {
-                    content: '';
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    width: 200%;
-                    height: 100%;
-                    background: linear-gradient(
-                        90deg,
-                        transparent,
-                        rgba(168, 85, 247, 0.4),
-                        transparent
-                    );
-                    animation: timeline-shine 3s linear infinite;
-                }
-
-                @keyframes timeline-shine {
-                    0% {
-                        transform: translateX(-100%);
-                    }
-                    100% {
-                        transform: translateX(50%);
-                    }
-                }
-
-                @keyframes pulse-border {
-                    0%, 100% {
-                        border-color: rgba(168, 85, 247, 0.5);
-                        box-shadow: 0 0 10px rgba(168, 85, 247, 0.3);
-                    }
-                    50% {
-                        border-color: rgba(168, 85, 247, 0.8);
-                        box-shadow: 0 0 20px rgba(168, 85, 247, 0.6);
-                    }
-                }
-
-                @keyframes pulse-text {
-                    0%, 100% {
-                        color: rgba(168, 85, 247, 0.8);
-                    }
-                    50% {
-                        color: rgba(168, 85, 247, 1);
-                    }
-                }
-
-                .animate-pulse-border {
-                    animation: pulse-border 2s infinite;
-                }
-
-                .animate-pulse-text {
-                    animation: pulse-text 2s infinite;
                 }
 
                 .spaceship-container {
