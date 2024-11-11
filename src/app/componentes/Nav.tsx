@@ -5,10 +5,18 @@ import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faTimes, faCode, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
+import dynamic from 'next/dynamic';
+import { useLanguage } from '../ContextLang/LanguageContext';
+
+const LanguageSelector = dynamic(
+  () => import('./LanguageSelector').then(mod => mod.LanguageSelector),
+  { ssr: false }
+);
 
 export default function Nav() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const { t } = useLanguage();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -34,10 +42,14 @@ export default function Nav() {
                 <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
                 <div className="w-3 h-3 bg-green-500 rounded-full"></div>
               </div>
-              <div className="ml-4 text-gray-400 text-sm hidden sm:block">terminal@heloysa:~</div>
+              <Link href="#linha-do-tempo" className="ml-4 text-gray-400 text-sm hidden sm:block">
+                {t('nav.terminal')}
+              </Link>
+              
             </div>
 
-            <div className="hidden md:flex space-x-6">
+            <div className="hidden md:flex items-center space-x-6">
+              <LanguageSelector />
               <Link 
                 href="https://github.com/helxysa" 
                 className="text-gray-400 hover:text-green-400 transition-colors duration-200"
@@ -45,7 +57,7 @@ export default function Nav() {
               >
                 <span className="text-green-400 mr-1">$</span>
                 <FontAwesomeIcon icon={faGithub} className="w-4 h-4 inline mr-1" />
-                github
+                {t('nav.github')}
               </Link>
               <Link 
                 href="#projetos" 
@@ -53,7 +65,7 @@ export default function Nav() {
               >
                 <span className="text-green-400 mr-1">$</span>
                 <FontAwesomeIcon icon={faCode} className="w-4 h-4 inline mr-1" />
-                projetos
+                {t('nav.skills')}
               </Link>
               <Link 
                 href="#contato" 
@@ -61,7 +73,7 @@ export default function Nav() {
               >
                 <span className="text-green-400 mr-1">$</span>
                 <FontAwesomeIcon icon={faEnvelope} className="w-4 h-4 inline mr-1" />
-                contato
+                {t('nav.contact')}
               </Link>
             </div>
 
@@ -77,6 +89,9 @@ export default function Nav() {
         {isMenuOpen && (
           <div className="md:hidden bg-gray-800 border-t border-gray-700">
             <div className="px-4 py-2 space-y-3">
+              <div className="py-2">
+                <LanguageSelector />
+              </div>
               <Link
                 href="https://github.com/helxysa"
                 className="block text-gray-400 hover:text-green-400 transition-colors duration-200"
@@ -85,7 +100,7 @@ export default function Nav() {
               >
                 <span className="text-green-400 mr-1">$</span>
                 <FontAwesomeIcon icon={faGithub} className="w-4 h-4 inline mr-1" />
-                github
+                {t('nav.github')}
               </Link>
               <Link
                 href="#habilidades"
@@ -94,7 +109,7 @@ export default function Nav() {
               >
                 <span className="text-green-400 mr-1">$</span>
                 <FontAwesomeIcon icon={faCode} className="w-4 h-4 inline mr-1" />
-                habilidades
+                {t('nav.skills')}
               </Link>
               <Link
                 href="#contato"
@@ -103,7 +118,7 @@ export default function Nav() {
               >
                 <span className="text-green-400 mr-1">$</span>
                 <FontAwesomeIcon icon={faEnvelope} className="w-4 h-4 inline mr-1" />
-                contato
+                {t('nav.contact')}
               </Link>
             </div>
           </div>

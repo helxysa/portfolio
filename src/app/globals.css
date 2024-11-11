@@ -24,6 +24,42 @@
     font-size: 24px !important;
 }
 
+.swiper-slide-active {
+  z-index: 10;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  color: theme('colors.purple.500') !important;
+  background: rgba(0, 0, 0, 0.5);
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+  background: rgba(0, 0, 0, 0.8);
+  color: theme('colors.purple.400') !important;
+}
+
+.swiper-button-next::after,
+.swiper-button-prev::after {
+  font-size: 20px !important;
+}
+
+.swiper-pagination-bullet {
+  width: 8px !important;
+  height: 8px !important;
+  margin: 0 6px !important;
+  transition: all 0.3s ease !important;
+}
+
+.swiper-pagination-bullet-active {
+  width: 24px !important;
+  border-radius: 4px !important;
+}
 
 .animate-blob {
   animation: blob 7s infinite;
@@ -186,5 +222,90 @@ body {
 
 html {
   scroll-behavior: smooth;
+}
+
+/* Agrupe todos os estilos do Swiper juntos */
+.swiper-button-next,
+.swiper-button-prev {
+    color: white !important;
+}
+
+.swiper-button-next:after,
+.swiper-button-prev:after {
+    font-size: 24px !important;
+}
+
+.swiper-slide {
+    transition: all 0.3s ease;
+}
+
+.swiper-slide-active {
+    z-index: 10;
+    animation: slideActive 0.3s ease forwards;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+    color: theme('colors.purple.500') !important;
+    background: rgba(0, 0, 0, 0.5);
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+    background: rgba(0, 0, 0, 0.8);
+    color: theme('colors.purple.400') !important;
+}
+
+.swiper-button-next::after,
+.swiper-button-prev::after {
+    font-size: 20px !important;
+}
+
+.swiper-pagination-bullet {
+    width: 8px !important;
+    height: 8px !important;
+    margin: 0 6px !important;
+    transition: all 0.3s ease !important;
+}
+
+.swiper-pagination-bullet-active {
+    width: 24px !important;
+    border-radius: 4px !important;
+    background: theme('colors.purple.500') !important;
+}
+
+.swiper-3d .swiper-slide-shadow-left,
+.swiper-3d .swiper-slide-shadow-right {
+    background-image: none;
+}
+
+@keyframes slideActive {
+    from {
+        transform: scale(0.85);
+    }
+    to {
+        transform: scale(1);
+    }
+}
+
+@media (max-width: 768px) {
+    .swiper-button-next,
+    .swiper-button-prev {
+        display: none !important;
+    }
+
+    .swiper-pagination-bullet {
+        width: 6px !important;
+        height: 6px !important;
+        margin: 0 4px !important;
+    }
+
+    .swiper-pagination-bullet-active {
+        width: 18px !important;
+    }
 }
 

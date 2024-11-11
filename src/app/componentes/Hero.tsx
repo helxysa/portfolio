@@ -1,23 +1,21 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import VSCodeSkills from './VSCodeSkills'
 import TechCarousel from './TechCarousel'
+import { useLanguage } from '../ContextLang/LanguageContext'
 
 export default function Hero() {
-    const texts = {
-        pt: {
-            text1: 'Olá, eu sou',
-            text2: 'Heloysa',
-            text3: 'Desenvolvedora Front-End && Back-End em formação',
-            button: 'Entre em contato'
-        },
-        en: {
-            text1: 'Hi, I am',
-            text2: 'Heloysa',
-            text3: 'Front-End && Back-End Developer in the making',
-            button: 'Contact me'
-        }
+    const { t } = useLanguage();
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    if (!mounted) {
+        return null; // ou um skeleton/loading state
     }
 
     return (
@@ -28,7 +26,8 @@ export default function Hero() {
                 <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-purple-500/5 rounded-full filter blur-3xl animate-pulse-slow delay-700" />
             </div>
 
-            <div className="container mx-auto max-w-7xl">
+            <div className="container mx-auto max-w-7xl relative">
+               
                 <div className="animate-float">
                     <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
                         <div className="space-y-6 md:space-y-8">
@@ -38,7 +37,9 @@ export default function Hero() {
                                         <div className="w-3 h-3 rounded-full bg-[#ff5f56]" />
                                         <div className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
                                         <div className="w-3 h-3 rounded-full bg-[#27c93f]" />
-                                        <span className="ml-4 sm:ml-5 text-xs sm:text-sm text-gray-400 font-mono tracking-wide">Perfil.tsx</span>
+                                        <span className="ml-4 sm:ml-5 text-xs sm:text-sm text-gray-400 font-mono tracking-wide">
+                                            {t('hero.fileName')}
+                                        </span>
                                     </div>
                                 </div>
                                 
@@ -46,15 +47,15 @@ export default function Hero() {
                                     <div className="space-y-4 md:space-y-6">
                                         <h1>
                                             <span className="block text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-white/80 font-light tracking-tight">
-                                                {texts.pt.text1}
+                                                {t('hero.greeting')}
                                             </span>
                                             <span className="block text-3xl pb-4 sm:text-4xl md:text-5xl lg:text-6xl mt-2 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-600 font-bold tracking-tight">
-                                                {texts.pt.text2}
+                                                {t('hero.name')}
                                             </span>
                                         </h1>
                                         
                                         <p className="text-base sm:text-lg md:text-xl text-white/60 max-w-2xl leading-relaxed">
-                                            {texts.pt.text3}
+                                            {t('hero.role')}
                                         </p>
                                     </div>
                                 </div>
@@ -70,7 +71,7 @@ export default function Hero() {
                                 active:scale-[0.98]"
                             >
                                 <span className="flex items-center">
-                                    {texts.pt.button}
+                                    {t('hero.contactButton')}
                                     <svg 
                                         className="ml-2 w-4 h-4 transform transition-transform duration-300 group-hover:translate-x-0.5" 
                                         fill="none" 

@@ -1,8 +1,10 @@
 'use client'
 
 import { useEffect, useState } from 'react';
+import { useLanguage } from '../ContextLang/LanguageContext'
 
 const LoadingAnimation = () => {
+  const { t, currentLanguage } = useLanguage();
   const [isTyping, setIsTyping] = useState(true);
   const [dots, setDots] = useState(0);
   const [messageIndex, setMessageIndex] = useState(0);
@@ -11,19 +13,8 @@ const LoadingAnimation = () => {
 
   const finalText = 'document.write(me_contte)';
 
-  const messages = [
-    'Procurando minhas redes sociais..',
-    'Pensando em algo legal para dizer..',
-    'Preparando algo especial..',
-    'Fazendo café..'
-  ];
-
-  const subMessages = [
-    'Prometo que sou mais rápido respondendo mensagens...',
-    'Enquanto isso, que tal um café?',
-    'Já volto, fui ali pegar um biscoito...',
-    'Será que esqueci o fogão ligado?'
-  ];
+  const messages = t('loading.messages');
+  const subMessages = t('loading.subMessages');
 
   useEffect(() => {
     if (isTyping && textIndex < finalText.length) {
@@ -62,11 +53,11 @@ const LoadingAnimation = () => {
 
   const currentMessage = isTyping 
     ? `${messages[messageIndex]}${'.'.repeat(dots)}`
-    : 'Isso não deveria ter acontecido...';
+    : t('loading.error');
 
   const currentSubMessage = isTyping 
     ? subMessages[messageIndex]
-    : 'Melhor você me mandar uma mensagem logo...';
+    : t('loading.errorSub');
 
   const getColoredText = () => {
     const parts = typedText.split(/([.()])/)
@@ -147,26 +138,18 @@ const LoadingAnimation = () => {
           
           <div className={`absolute bottom-16 left-[80%] transform -translate-x-1/2 ${isTyping ? 'typing-animation' : 'frustrated-animation'}`}>
             <div className={`w-20 h-20 rounded-full relative shadow-md head ${isTyping ? 'bg-yellow-200' : 'bg-red-500'}`}>
-              {/* Óculos */}
               <div className="absolute top-4 left-1/2 transform -translate-x-1/2 w-16 flex items-center">
-                {/* Armação central */}
                 <div className="absolute w-3 h-1.5 bg-black top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
-                {/* Lente Esquerda */}
                 <div className="w-6 h-6 rounded-lg border-2 border-black bg-white/10 relative">
-                  {/* Brilho da lente */}
                   <div className="absolute top-1 right-1 w-2.5 h-2.5 bg-white/40 rounded-full transform rotate-45" />
                 </div>
-                {/* Lente Direita */}
                 <div className="w-6 h-6 rounded-lg border-2 border-black bg-white/10 ml-4 relative">
-                  {/* Brilho da lente */}
                   <div className="absolute top-1 right-1 w-2.5 h-2.5 bg-white/40 rounded-full transform rotate-45" />
                 </div>
-                {/* Hastes laterais */}
                 <div className="absolute w-2.5 h-1.5 bg-black -left-2 top-1/2 transform -translate-y-1/2" />
                 <div className="absolute w-2.5 h-1.5 bg-black -right-2 top-1/2 transform -translate-y-1/2" />
               </div>
               
-              {/* Olhos (ajustados para ficar atrás dos óculos) */}
               <div className="absolute top-5 left-4 w-4 h-4 bg-white rounded-full eye-blink">
                 <div className="absolute top-1 left-1 w-2 h-2 bg-black rounded-full" />
               </div>

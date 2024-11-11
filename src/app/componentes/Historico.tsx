@@ -3,6 +3,8 @@ import { useEffect, useState, useRef, useCallback } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation, Pagination } from 'swiper/modules'
 import SpaceShip from './SpaceShip'
+import { useLanguage } from '../ContextLang/LanguageContext'
+import { Language } from '../translations'
 
 import 'swiper/css'
 import 'swiper/css/navigation'
@@ -10,47 +12,36 @@ import 'swiper/css/pagination'
 
 interface HistoricoItem {
     ano: string
-    titulo: string
-    descricao: string
     tipo: 'educacao' | 'experiencia'
+    timelineKey: string
     isHit?: boolean
 }
 
 const historicoItems: HistoricoItem[] = [
     {
         ano: '2023',
-        titulo: 'Entrei no Curso de Ciência da Computação',
-        descricao: 'Em 2023, foi quando ingressei na Unifap - Universidade Federal do Amapá, onde atualmente ainda curso Ciência da Computação',
         tipo: 'educacao',
-        isHit: false
+        timelineKey: 'computerScience'
     },
     {
         ano: '2023',
-        titulo: 'Monitorias na Unifap',
-        descricao: 'Fui monitora de Programação I e Programação II, onde auxiliei os alunos a entender os conteúdos e resolver dúvidas. Foi uma experiência que me ajudou a desenvolver minhas habilidades de comunicação e resolução de problemas.',
         tipo: 'experiencia',
-        isHit: false
+        timelineKey: 'monitoring'
     },
     {
         ano: '2023',
-        titulo: 'Unifap Digital',
-        descricao: 'Fui bolsista do Unifap Digital, onde lecionei aulas de Javascript, HTML e CSS. Esse projeto era voltado para capacitar jovens e adultos a adquirir habilidades em programação e desenvolvimento de web gratuitamente.',
         tipo: 'experiencia',
-        isHit: false
+        timelineKey: 'unifapDigital'
     },
     {
         ano: '2024',
-        titulo: 'Estágio na Ministerio Publico do Amapá',
-        descricao: 'Atualmente estou trabalhando como estagiaria na Ministerio Publico do Amapá, no setor de TI.',
         tipo: 'experiencia',
-        isHit: false
+        timelineKey: 'ministerioPublico'
     },
     {
-        ano: '2023',
-        titulo: 'Bolsista TEDPLAN UNIFAP',
-        descricao: 'Sou bolsista do TEDPLAN UNIFAP, onde estou atuando como desenvolvedora na stack Next.js',
+        ano: '2024',
         tipo: 'experiencia',
-        isHit: false
+        timelineKey: 'tedplan'
     }
 ]
 
@@ -64,6 +55,7 @@ export default function Historico() {
     const [spaceshipEnabled, setSpaceshipEnabled] = useState(true)
     const [showPulse, setShowPulse] = useState(true)
     const [isShooting, setIsShooting] = useState(false)
+    const { t, currentLanguage } = useLanguage();
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -130,7 +122,7 @@ export default function Historico() {
     return (
         <section 
             ref={sectionRef} 
-            id="historico-section"
+            id="linha-do-tempo"
             className={`relative min-h-[80vh] sm:min-h-screen bg-gradient-to-b from-gray-900 to-[#1e1e1e] py-4 sm:py-20 ${!isMobile && spaceshipEnabled ? 'cursor-none' : ''} ${!isMobile ? 'pb-8 lg:pb-4' : ''}`}
         >
             {!isMobile && isVisible && spaceshipEnabled && (
@@ -161,7 +153,7 @@ export default function Historico() {
             
             <div className="relative mb-8 sm:mb-8 md:mb-10 mt-1 sm:mt-6 md:mt-8">
                 <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-600">
-                    Linha do Tempo
+                    {t('timeline.title')}
                 </h1>
                 <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-12 h-[2px] bg-purple-500"></div>
             </div>
@@ -170,7 +162,8 @@ export default function Historico() {
                 {isMobile ? (
                     <div className="flex flex-col gap-4">
                         {items.map((item, index) => {
-                            const isLongText = item.descricao.length > 150;
+                            const descriptionText = t(`timeline.items.${item.timelineKey}.${currentLanguage}.descricao`);
+                            const isLongText = descriptionText.length > 150;
 
                             return (
                                 <div
@@ -189,18 +182,21 @@ export default function Historico() {
                                                 ? 'bg-blue-500/10 text-blue-400' 
                                                 : 'bg-green-500/10 text-green-400'
                                         }`}>
-                                            {item.tipo}
+                                            {item.tipo === 'educacao' 
+                                                ? t('timeline.education') 
+                                                : t('timeline.experience')
+                                            }
                                         </span>
                                     </div>
 
                                     <h3 className="text-white text-lg font-semibold mb-2">
-                                        {item.titulo}
+                                        {t(`timeline.items.${item.timelineKey}.${currentLanguage}.titulo`)}
                                     </h3>
 
                                     <p className={`text-sm text-gray-300 ${
                                         isLongText ? (expandedCard === index ? 'line-clamp-none' : 'line-clamp-2') : ''
                                     }`}>
-                                        {item.descricao}
+                                        {t(`timeline.items.${item.timelineKey}.${currentLanguage}.descricao`)}
                                     </p>
 
                                     {isLongText && (
@@ -212,7 +208,7 @@ export default function Historico() {
                                                     : 'text-gray-400 bg-gray-500/10 border border-gray-500/20 hover:bg-gray-500/20 hover:text-purple-400'
                                             }`}
                                         >
-                                            {expandedCard === index ? 'Ver menos' : 'Ver mais'}
+                                            {expandedCard === index ? t('timeline.showLess') : t('timeline.showMore')}
                                             <svg 
                                                 className={`w-4 h-4 transition-transform duration-300 ${
                                                     expandedCard === index ? 'rotate-180' : ''
@@ -326,18 +322,21 @@ export default function Historico() {
                                                             ? 'text-blue-300 border-blue-500/20 bg-blue-500/5' 
                                                             : 'text-green-300 border-green-500/20 bg-green-500/5'
                                                     } border transition-colors duration-300`}>
-                                                        {item.tipo === 'educacao' ? 'Educação' : 'Experiência'}
+                                                        {item.tipo === 'educacao' 
+                                                            ? t('timeline.education') 
+                                                            : t('timeline.experience')
+                                                        }
                                                     </span>
                                                 </div>
 
                                                 <h3 className="text-base sm:text-lg font-bold text-white mb-2 group-hover:text-purple-400 transition-colors duration-300">
-                                                    {item.titulo}
+                                                    {t(`timeline.items.${item.timelineKey}.${currentLanguage}.titulo`)}
                                                 </h3>
 
                                                 <p className={`text-sm text-gray-300 group-hover:text-gray-200 transition-all duration-500 ${
                                                     expandedCard === index ? 'line-clamp-none' : 'line-clamp-2'
                                                 }`}>
-                                                    {item.descricao}
+                                                    {t(`timeline.items.${item.timelineKey}.${currentLanguage}.descricao`)}
                                                 </p>
 
                                                 <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 bg-gradient-to-t from-gray-800/95 via-gray-800/80 to-transparent">
@@ -348,7 +347,7 @@ export default function Historico() {
                                                                 : 'text-gray-400 hover:text-purple-400'
                                                         }`}
                                                     >
-                                                        <span>{expandedCard === index ? 'Ver menos' : 'Ver mais'}</span>
+                                                        <span>{expandedCard === index ? t('timeline.showLess') : t('timeline.showMore')}</span>
                                                         <svg 
                                                             className={`w-5 h-5 transition-transform duration-300 ${
                                                                 expandedCard === index ? 'rotate-180' : ''
@@ -385,12 +384,11 @@ export default function Historico() {
                             : 'text-gray-400/80 hover:text-purple-400/80'
                         }
                     `}>
-                        {isShooting ? 'Pew...' : 'Aperte W para atirar'}
+                        {isShooting ? t('timeline.shootingText') : t('timeline.shootInstruction')}
                     </span>
                 </div>
             )}
 
-            {/* Botão de toggle da spaceship */}
             {!isMobile && (
                 <button
                     onClick={() => setSpaceshipEnabled(!spaceshipEnabled)}
@@ -408,14 +406,14 @@ export default function Historico() {
                                 <svg className="w-3.5 h-3.5 lg:w-4 lg:h-4 xl:w-5 xl:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
-                                <span>Desativar Nave</span>
+                                <span>{t('timeline.disableSpaceship')}</span>
                             </>
                         ) : (
                             <>
                                 <svg className="w-3.5 h-3.5 lg:w-4 lg:h-4 xl:w-5 xl:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
-                                <span>Ativar Nave</span>
+                                <span>{t('timeline.enableSpaceship')}</span>
                             </>
                         )}
                     </div>
