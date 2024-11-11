@@ -38,7 +38,7 @@ export default function Hero() {
                                         <div className="w-3 h-3 rounded-full bg-[#ff5f56]" />
                                         <div className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
                                         <div className="w-3 h-3 rounded-full bg-[#27c93f]" />
-                                        <span className="ml-4 sm:ml-5 text-xs sm:text-sm text-gray-400 font-mono tracking-wide">Profile.tsx</span>
+                                        <span className="ml-4 sm:ml-5 text-xs sm:text-sm text-gray-400 font-mono tracking-wide">Perfil.tsx</span>
                                     </div>
                                 </div>
                                 
@@ -48,7 +48,7 @@ export default function Hero() {
                                             <span className="block text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-white/80 font-light tracking-tight">
                                                 {texts.pt.text1}
                                             </span>
-                                            <span className="block text-3xl sm:text-4xl md:text-5xl lg:text-6xl mt-2 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-600 font-bold tracking-tight">
+                                            <span className="block text-3xl pb-4 sm:text-4xl md:text-5xl lg:text-6xl mt-2 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-600 font-bold tracking-tight">
                                                 {texts.pt.text2}
                                             </span>
                                         </h1>
