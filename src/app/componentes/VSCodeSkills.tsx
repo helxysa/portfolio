@@ -40,7 +40,7 @@ export default function VSCodeSkills() {
                     </div>
                     <div className="hover:translate-x-2 transition-transform duration-200 ease-in-out group">
                         <span className="text-green-400/90 group-hover:text-green-300">{t('skills.sections.tools')}:</span>
-                        <span className="text-orange-300/90 group-hover:text-orange-200">{` ['Git', 'VS Code', 'Prisma', 'Sequelize']`}</span>
+                        <span className="text-orange-300/90 group-hover:text-orange-200">{` ['Git', 'Prisma', 'Sequelize']`}</span>
                     </div>
                     <div className="hover:translate-x-2 transition-transform duration-200 ease-in-out group">
                         <span className="text-green-400/90 group-hover:text-green-300">{t('skills.sections.extra')}:</span>
