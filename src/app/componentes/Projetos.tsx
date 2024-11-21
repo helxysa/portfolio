@@ -63,6 +63,16 @@ const projetos = [
         status: "Em andamento"
     },
     {
+        nome: "Sistema Help Center",
+        image: '/images/judbr-1.png',
+        descricaoKey: "helpcenter",
+        github: "https://github.com/helxysa/help-center",
+        site: "https://help-center-mp.vercel.app/",
+        mostrarSite: true,
+        stack: ["Next.js"],
+        status: "Em Andamento"
+    },
+    {
         image: '/images/judbr-2.png',
         nome: "⚖️ JUDBR",
         descricaoKey: "judbr2",
