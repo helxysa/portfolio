@@ -61,8 +61,8 @@ export const MouseFollower = () => {
         const dy = realPosition.y - prev.y
         
         return {
-          x: prev.x + dx * 0.12,
-          y: prev.y + dy * 0.12
+          x: prev.x + dx * 0.8,
+          y: prev.y + dy * 0.8
         }
       })
 
@@ -96,27 +96,19 @@ export const MouseFollower = () => {
   if (!isDesktop || 'ontouchstart' in window) return null
 
   return (
-    <div className="fixed inset-0 z-50 md:block" style={{ pointerEvents: 'none' }}>
+    <div className="fixed inset-0 z-50 pointer-events-none cursor-default">
       <div
-        className={`fixed h-32 w-32 rounded-full bg-gradient-to-br from-violet-600 via-indigo-500 to-purple-500 blur-2xl transition-all duration-300 ease-out ${
-          isMoving ? 'opacity-20 scale-125' : 'opacity-20 scale-100'
-        } ${isHovering ? 'opacity-0' : ''}`}
+        className="fixed h-32 w-32 rounded-full bg-gradient-to-br from-violet-600/20 via-indigo-500/20 to-purple-500/20 blur-2xl transition-all duration-300 ease-out pointer-events-none opacity-20"
         style={{
           transform: `translate3d(${position.x - 64}px, ${position.y - 64}px, 0)`,
-          willChange: 'transform',
-          pointerEvents: 'none',
-          transition: 'opacity 0.3s ease-out'
+          willChange: 'transform'
         }}
       />
       <div
-        className={`fixed h-16 w-16 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 blur-xl transition-all duration-300 ease-out ${
-          isMoving ? 'opacity-30 scale-75' : 'opacity-30 scale-100'
-        } ${isHovering ? 'opacity-0' : ''}`}
+        className="fixed h-16 w-16 rounded-full bg-gradient-to-r from-pink-500/20 to-purple-500/20 blur-xl transition-all duration-300 ease-out pointer-events-none opacity-20"
         style={{
           transform: `translate3d(${position.x - 32}px, ${position.y - 32}px, 0)`,
-          willChange: 'transform',
-          pointerEvents: 'none',
-          transition: 'opacity 0.3s ease-out'
+          willChange: 'transform'
         }}
       />
     </div>

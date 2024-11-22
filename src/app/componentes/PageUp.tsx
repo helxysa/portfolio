@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import styles from './PageUp.module.css'
+import styles from '../styles/PageUp.module.css'
 import { IoIosArrowUp } from 'react-icons/io'
 import Image from 'next/image'
 

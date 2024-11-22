@@ -5,13 +5,9 @@ import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faTimes, faCode, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
-import dynamic from 'next/dynamic';
 import { useLanguage } from '../ContextLang/LanguageContext';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
-const LanguageSelector = dynamic(
-  () => import('./LanguageSelector').then(mod => mod.LanguageSelector),
-  { ssr: false }
-);
+import { LanguageSelector } from './LanguageSelector';
 
 export default function Nav() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -102,10 +98,9 @@ export default function Nav() {
 
                 {isLanguageOpen && (
                   <div 
-                    className="absolute left-0 mt-2 w-48 bg-gray-800/95 backdrop-blur-sm border border-gray-700/50 shadow-lg rounded-xl overflow-hidden animate-fadeIn"
+                    className="absolute left-0 mt-2 w-48 bg-gray-800/95 backdrop-blur-sm border border-gray-700/50 shadow-lg rounded-xl overflow-hidden"
                     style={{ 
-                      zIndex: 999999,
-                      animation: 'fadeIn 0.2s ease-out'
+                      zIndex: 999999
                     }}
                   >
                     <div className="p-2 border-b border-gray-700/50 text-xs text-gray-500">
@@ -166,7 +161,6 @@ export default function Nav() {
         {isMenuOpen && (
           <div className="md:hidden bg-gray-800/95 backdrop-blur-sm border-t border-gray-700/50 rounded-b-xl overflow-hidden animate-slideDown">
             <div className="px-4 py-3 space-y-4">
-              {/* Dropdown de Idioma Mobile */}
               <div className="relative">
                 <div className="p-2 border border-gray-700/50 rounded-xl bg-gray-800/50">
                   <div className="p-2 border-b border-gray-700/50 text-xs text-gray-500">
@@ -188,7 +182,6 @@ export default function Nav() {
                 </div>
               </div>
 
-              {/* Links Mobile */}
               <div className="space-y-3 p-2 border border-gray-700/50 rounded-xl bg-gray-800/50">
                 <Link
                   href="https://github.com/helxysa"
@@ -220,7 +213,6 @@ export default function Nav() {
                 </Link>
               </div>
 
-              {/* Informação do Terminal Mobile */}
               <div className="text-xs text-gray-500 px-2">
                 <span className="text-green-400">terminal@heloysa</span>:~
               </div>

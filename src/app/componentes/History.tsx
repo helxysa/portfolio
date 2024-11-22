@@ -5,6 +5,7 @@ import { Navigation, Pagination } from 'swiper/modules'
 import SpaceShip from './SpaceShip'
 import { useLanguage } from '../ContextLang/LanguageContext'
 import { Language } from '../translations'
+import { useCursor } from '../ContextCursor/ContextCursor'
 
 import 'swiper/css'
 import 'swiper/css/navigation'
@@ -56,6 +57,7 @@ export default function Historico() {
     const [showPulse, setShowPulse] = useState(true)
     const [isShooting, setIsShooting] = useState(false)
     const { t, currentLanguage } = useLanguage();
+    const { setHideCursor } = useCursor()
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -104,6 +106,18 @@ export default function Historico() {
         }
     }, [isVisible])
 
+    useEffect(() => {
+        if (!isMobile && isVisible && spaceshipEnabled) {
+            setHideCursor(true)
+        } else {
+            setHideCursor(false)
+        }
+        
+        return () => {
+            setHideCursor(false)
+        }
+    }, [isMobile, isVisible, spaceshipEnabled, setHideCursor])
+
     const handleHit = useCallback((index: number) => {
         setItems(prev => prev.map((item, i) => {
             if (i === index) {
@@ -123,7 +137,7 @@ export default function Historico() {
         <section 
             ref={sectionRef} 
             id="linha-do-tempo"
-            className={`relative min-h-[80vh] sm:min-h-screen bg-gradient-to-b from-gray-900 to-[#1e1e1e] py-4 sm:py-20 ${!isMobile && spaceshipEnabled ? 'cursor-none' : ''} ${!isMobile ? 'pb-8 lg:pb-4' : ''}`}
+            className={`relative min-h-[80vh] sm:min-h-screen bg-gradient-to-b from-gray-900 to-[#1e1e1e] py-4 sm:py-20 ${!isMobile ? 'pb-8 lg:pb-4' : ''}`}
         >
             {!isMobile && isVisible && spaceshipEnabled && (
                 <div className="spaceship-container">
@@ -396,7 +410,7 @@ export default function Historico() {
                         px-3 py-1.5 lg:px-4 lg:py-2 xl:px-5 xl:py-2.5 
                         rounded-full bg-gray-800/80 backdrop-blur-sm border transition-all duration-300 group z-10 hidden lg:block
                         ${showPulse && isVisible ? 'animate-pulse-border' : 'border-gray-700/50 hover:border-purple-500/50'} 
-                        hover:shadow-purple-500/30`}
+                        hover:shadow-purple-500/30 cursor-pointer`}
                 >
                     <div className={`flex items-center gap-1.5 text-xs lg:text-sm xl:text-base ${
                         showPulse && isVisible ? 'animate-pulse-text' : 'text-gray-400 group-hover:text-purple-400'
@@ -489,6 +503,16 @@ export default function Historico() {
                 .spaceship-container {
                     position: relative;
                     z-index: 10;
+                }
+
+                button, a {
+                    cursor: pointer !important;
+                }
+                
+                .swiper-button-next,
+                .swiper-button-prev,
+                .swiper-pagination-bullet {
+                    cursor: pointer !important;
                 }
             `}</style>
         </section>

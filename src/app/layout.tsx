@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import "./animation.css";
-import { MouseFollower } from "@/app/componentes/MouseFollower";
 import PageUp from "@/app/componentes/PageUp";
 import { LanguageProvider } from "./ContextLang/LanguageContext";
 
@@ -22,7 +21,6 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <LanguageProvider>
-          <MouseFollower />
           {children}
           <PageUp />
         </LanguageProvider>
