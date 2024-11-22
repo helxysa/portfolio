@@ -27,6 +27,23 @@ export default function SpaceShip({ onHit, cardsRef, onMeteorHit }: SpaceShipPro
     const [isWPressed, setIsWPressed] = useState(false)
 
     useEffect(() => {
+        const handleVisibilityChange = () => {
+            if (!isInSection) {
+                const buttons = document.querySelectorAll('button, a, .clickable')
+                buttons.forEach(button => {
+                    if (button instanceof HTMLElement) {
+                        button.style.pointerEvents = 'auto'
+                        button.style.cursor = 'pointer'
+                    }
+                })
+            }
+        }
+
+        handleVisibilityChange()
+        return () => handleVisibilityChange()
+    }, [isInSection])
+
+    useEffect(() => {
         if (pendingHitRef.current !== null) {
             onHit(pendingHitRef.current)
             pendingHitRef.current = null

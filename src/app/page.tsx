@@ -3,7 +3,7 @@ import Hero from '@/app/componentes/Hero';
 import Projetos from '@/app/componentes/Projects';
 import Historico from '@/app/componentes/History';
 import Contato from '@/app/componentes/Contact';
-import { CursorProvider } from './ContextCursor/ContextCursor';
+import { CursorProvider } from './ContextCursor/ContextCursor'
 
 export default function Home() {
   return (

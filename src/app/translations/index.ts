@@ -53,7 +53,11 @@ export const translations = {
         judbr2: {
           pt: "Ladingpage de apresentação do Sistema JUDBR.",
           en: "Landing page presentation of the JUDBR System."
-        }
+        },
+        helpcenter: {
+          pt: "Projeto de Help Center para cadastro de manuais",
+          en: "Help Center project for manual registration"
+        },
       }
     },
     timeline: {
@@ -219,7 +223,11 @@ export const translations = {
         judbr2: {
           pt: "Ladingpage de apresentação do Sistema JUDBR.",
           en: "Landing page presentation of the JUDBR System."
-        }
+        },
+        helpcenter: {
+          pt: "Projeto de Help Center para cadastro de manuais",
+          en: "Help Center project for manual registration"
+        },
       }
     },
     timeline: {

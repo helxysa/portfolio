@@ -107,14 +107,32 @@ export default function Historico() {
     }, [isVisible])
 
     useEffect(() => {
-        if (!isMobile && isVisible && spaceshipEnabled) {
-            setHideCursor(true)
-        } else {
-            setHideCursor(false)
+        const handleVisibilityChange = () => {
+            if (!isMobile && isVisible && spaceshipEnabled) {
+                setHideCursor(true)
+            } else {
+                setHideCursor(false)
+            }
         }
-        
+
+        handleVisibilityChange()
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (!entries[0].isIntersecting) {
+                    setHideCursor(false)
+                }
+            },
+            { threshold: 0.1 }
+        )
+
+        if (sectionRef.current) {
+            observer.observe(sectionRef.current)
+        }
+
         return () => {
             setHideCursor(false)
+            observer.disconnect()
         }
     }, [isMobile, isVisible, spaceshipEnabled, setHideCursor])
 
@@ -125,12 +143,43 @@ export default function Historico() {
             }
             return item
         }))
+        setExpandedCard(null)
     }, [])
+
+    const handleCardClick = useCallback((index: number, e: React.MouseEvent) => {
+        e.preventDefault()
+        e.stopPropagation()
+        
+        const target = e.target as HTMLElement
+        if (target.tagName.toLowerCase() === 'a' || target.closest('a')) {
+            return
+        }
+        
+        setExpandedCard(expandedCard === index ? null : index)
+    }, [expandedCard])
 
     const setCardRef = useCallback((el: HTMLDivElement | null, index: number) => {
         if (cardsRef.current) {
             cardsRef.current[index] = el
         }
+    }, [])
+
+    const handleMeteorHit = useCallback((index: number) => {
+        setItems(prev => prev.map((item, i) => {
+            if (i === index) {
+                return { ...item, isHit: true }
+            }
+            return item
+        }))
+
+        setTimeout(() => {
+            setItems(prev => prev.map((item, i) => {
+                if (i === index) {
+                    return { ...item, isHit: false }
+                }
+                return item
+            }))
+        }, 1000)
     }, [])
 
     return (
@@ -324,7 +373,7 @@ export default function Historico() {
                                                         ? 'border-purple-500 shadow-purple-500/50 ring-2 ring-purple-500/50' 
                                                         : 'border-gray-700/50 hover:border-purple-500/50 hover:shadow-purple-500/30'
                                             } border relative h-full cursor-pointer`}
-                                            onClick={() => setExpandedCard(expandedCard === index ? null : index)}
+                                            onClick={(e) => handleCardClick(index, e)}
                                         >
                                             <div className="flex flex-col p-4 sm:p-6 h-full relative">
                                                 <div className="flex items-start justify-between mb-3">

@@ -599,3 +599,18 @@ html {
     }
 }
 
+.spaceship-cursor {
+    cursor: none !important;
+}
+
+.spaceship-cursor button,
+.spaceship-cursor a {
+    cursor: pointer !important;
+}
+
+/* Garante que elementos fora da seção da nave mantenham o cursor normal */
+:not(.spaceship-cursor) button,
+:not(.spaceship-cursor) a {
+    cursor: pointer !important;
+}
+

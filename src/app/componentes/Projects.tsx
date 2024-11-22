@@ -64,7 +64,7 @@ const projetos = [
     },
     {
         nome: "Sistema Help Center",
-        image: '/images/judbr-1.png',
+        image: '',
         descricaoKey: "helpcenter",
         github: "https://github.com/helxysa/help-center",
         site: "https://help-center-mp.vercel.app/",
@@ -205,17 +205,17 @@ export default function Projetos() {
         }
     }
 
-    const handleToggleMostrar = () => {
-        if (isTransitioning) return;
+    const handleToggleMostrar = useCallback(() => {
+        if (isTransitioning) return
         
-        setIsTransitioning(true);
-        setMostrarTodos(prev => !prev);
-        setExpandedCard(null);
+        setIsTransitioning(true)
+        setMostrarTodos(prev => !prev)
+        setExpandedCard(null)
         
         setTimeout(() => {
-            setIsTransitioning(false);
-        }, 300);
-    };
+            setIsTransitioning(false)
+        }, 200)
+    }, [isTransitioning])
 
     useEffect(() => {
         setExpandedCard(null);
@@ -234,6 +234,70 @@ export default function Projetos() {
     const projetosParaMostrar = mostrarTodos 
         ? projetosFiltrados 
         : projetosFiltrados.slice(0, 3)
+
+    useEffect(() => {
+        const enableInteractions = () => {
+            document.documentElement.style.cursor = ''
+            const projectsSection = document.getElementById('projetos')
+            if (projectsSection) {
+                const interactiveElements = projectsSection.querySelectorAll('button, a, .clickable, .swiper-button-next, .swiper-button-prev, .swiper-pagination-bullet')
+                interactiveElements.forEach(element => {
+                    if (element instanceof HTMLElement) {
+                        element.style.cursor = 'pointer'
+                        element.style.pointerEvents = 'auto'
+                    }
+                })
+            }
+        }
+
+        enableInteractions()
+
+        const observer = new MutationObserver(enableInteractions)
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true,
+            attributes: true,
+            attributeFilter: ['style', 'class']
+        })
+
+        return () => {
+            observer.disconnect()
+            enableInteractions()
+        }
+    }, [])
+
+    useEffect(() => {
+        const handleVisibilityChange = () => {
+            const projectsSection = document.getElementById('projetos')
+            if (projectsSection && projectsSection.matches(':hover')) {
+                document.documentElement.style.cursor = ''
+                const interactiveElements = projectsSection.querySelectorAll('button, a, .clickable')
+                interactiveElements.forEach(element => {
+                    if (element instanceof HTMLElement) {
+                        element.style.cursor = 'pointer'
+                        element.style.pointerEvents = 'auto'
+                    }
+                })
+            }
+        }
+
+        document.addEventListener('visibilitychange', handleVisibilityChange)
+        return () => document.removeEventListener('visibilitychange', handleVisibilityChange)
+    }, [])
+
+    useEffect(() => {
+        if (swiperRef.current) {
+            swiperRef.current.on('slideChange', () => {
+                const buttons = document.querySelectorAll('button, a, .clickable')
+                buttons.forEach(button => {
+                    if (button instanceof HTMLElement) {
+                        button.style.pointerEvents = 'auto'
+                        button.style.cursor = 'pointer'
+                    }
+                })
+            })
+        }
+    }, [swiperRef.current])
 
     return (
         <section className="w-full py-8 sm:py-12 md:py-16 lg:py-20 bg-gradient-to-b from-[#1e1e1e] to-gray-900" id='projetos'>
@@ -263,13 +327,13 @@ export default function Projetos() {
             </div>
 
             <div className="max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8 pb-8 sm:pb-12 md:pb-16 lg:pb-20">
-                {(!mostrarTodos || isMobile) ? (
+                {!mostrarTodos ? (
                     <Swiper
                         modules={[Autoplay, Navigation, Pagination, EffectCoverflow]}
                         effect={'coverflow'}
                         grabCursor={true}
                         centeredSlides={true}
-                        initialSlide={2}
+                        slidesPerView={'auto'}
                         navigation={{
                             nextEl: '.swiper-button-next',
                             prevEl: '.swiper-button-prev',
@@ -285,21 +349,6 @@ export default function Projetos() {
                             320: {
                                 slidesPerView: 1.1,
                                 spaceBetween: 12,
-                                coverflowEffect: {
-                                    rotate: 0,
-                                    stretch: 0,
-                                    depth: 50,
-                                    modifier: 1,
-                                    slideShadows: false,
-                                }
-                            },
-                            375: {
-                                slidesPerView: 1.15,
-                                spaceBetween: 15,
-                            },
-                            425: {
-                                slidesPerView: 1.2,
-                                spaceBetween: 15,
                             },
                             768: {
                                 slidesPerView: 2,
@@ -320,29 +369,22 @@ export default function Projetos() {
                             bulletClass: 'swiper-pagination-bullet !bg-gray-400 !opacity-100 hover:!bg-purple-400'
                         }}
                         onSwiper={(swiper) => {
-                            swiperRef.current = swiper;
+                            swiperRef.current = swiper
                         }}
                         className="!overflow-visible !pt-4 !pb-8 sm:!pt-6 sm:!pb-10 md:!pt-8 md:!pb-12"
                     >
-                        
-
                         {projetosFiltrados.map((projeto, index) => (
-                            <SwiperSlide 
-                                key={index} 
-                                className="!w-[85vw] sm:!w-[320px] md:!w-[380px]"
-                            >
+                            <SwiperSlide key={index}>
                                 {({ isActive }) => (
-                                    <div 
-                                        className={`
-                                            transform transition-all duration-500 
-                                            ${isActive 
-                                                ? 'scale-100 opacity-100 shadow-lg shadow-purple-500/20' 
-                                                : 'scale-[0.85] opacity-30 blur-[0.5px]'
-                                            }
-                                        `}
-                                    >
+                                    <div className={`
+                                        transform transition-all duration-500 
+                                        ${isActive 
+                                            ? 'scale-100 opacity-100 shadow-lg shadow-purple-500/20' 
+                                            : 'scale-[0.85] opacity-30 blur-[0.5px]'
+                                        }
+                                    `}>
                                         <ProjetoCard 
-                                            projeto={projeto} 
+                                            projeto={projeto}
                                             index={index}
                                             expandido={expandedCard === index}
                                             onToggleExpand={() => setExpandedCard(expandedCard === index ? null : index)}
@@ -353,14 +395,11 @@ export default function Projetos() {
                         ))}
                     </Swiper>
                 ) : (
-                    <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                         {projetosFiltrados.map((projeto, index) => (
-                            <div 
-                                key={index}
-                                className="transform transition-all duration-500 hover:scale-[1.02]"
-                            >
+                            <div key={index} className="transform transition-all duration-500">
                                 <ProjetoCard 
-                                    projeto={projeto} 
+                                    projeto={projeto}
                                     index={index}
                                     expandido={expandedCard === index}
                                     onToggleExpand={() => setExpandedCard(expandedCard === index ? null : index)}
@@ -370,42 +409,17 @@ export default function Projetos() {
                     </div>
                 )}
 
-                {!isMobile && (
-                    <div className="hidden md:flex justify-center mt-8">
+                {!isMobile && projetosFiltrados.length > 3 && (
+                    <div className="flex justify-center mt-8">
                         <button
-                            onClick={handleToggleMostrar}
-                            disabled={isTransitioning}
-                            className={`
-                                group relative px-6 py-3 
-                                bg-gradient-to-r from-purple-600 to-purple-700 
-                                text-white rounded-lg overflow-hidden transition-all duration-300 
-                                hover:shadow-lg hover:shadow-purple-500/30 hover:-translate-y-0.5
-                                active:translate-y-0
-                                ${isTransitioning ? 'opacity-50 cursor-not-allowed' : ''}
-                            `}
+                            onClick={() => setMostrarTodos(!mostrarTodos)}
+                            className="group relative px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-700 
+                                text-white rounded-lg overflow-hidden transition-all duration-300
+                                hover:shadow-lg hover:shadow-purple-500/30"
                         >
-                            <div className="absolute inset-0 bg-purple-800/50 transform origin-left 
-                                scale-x-0 group-hover:scale-x-100 transition-transform duration-300"/>
-                            <div className="relative flex items-center justify-center gap-2">
-                                <span className="font-medium">
-                                    {mostrarTodos ? t('projects.showLess') : t('projects.showMore')}
-                                </span>
-                                <svg 
-                                    className={`w-4 h-4 transition-transform duration-300 ${
-                                        mostrarTodos ? 'rotate-180' : ''
-                                    }`}
-                                    fill="none" 
-                                    stroke="currentColor" 
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path 
-                                        strokeLinecap="round" 
-                                        strokeLinejoin="round" 
-                                        strokeWidth={2} 
-                                        d="M19 9l-7 7-7-7"
-                                    />
-                                </svg>
-                            </div>
+                            <span className="relative z-10">
+                                {mostrarTodos ? t('projects.showLess') : t('projects.showMore')}
+                            </span>
                         </button>
                     </div>
                 )}
@@ -424,66 +438,84 @@ interface ProjetoCardProps {
 const ProjetoCard = ({ projeto, index, expandido, onToggleExpand }: ProjetoCardProps) => {
     const { t, currentLanguage } = useLanguage();
     
-    const handleCardClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.stopPropagation();
+    const handleCardClick = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault()
+        e.stopPropagation()
         
-        const target = e.target as HTMLElement;
-        if (target.tagName.toLowerCase() === 'a' || 
-            target.closest('a')) {
-            return;
+        const target = e.target as HTMLElement
+        if (target.tagName.toLowerCase() === 'a' || target.closest('a')) {
+            return
         }
 
-        onToggleExpand();
-    };
+        onToggleExpand()
+    }, [onToggleExpand])
 
     return (
         <button 
             type="button"
             onClick={handleCardClick}
-            aria-expanded={expandido}
-            aria-label={`Expandir detalhes do projeto ${projeto.nome}`}
             className={`
-                w-full text-left group 
+                w-full h-[500px] text-left group 
                 bg-gray-800/80 backdrop-blur-sm 
                 rounded-lg overflow-hidden 
                 shadow-lg border border-gray-700/50
                 transform transition-all duration-500 
                 hover:scale-[1.02] hover:shadow-purple-500/30
-                perspective-[1000px] hover:rotate-y-[-15deg]
-                hover:transform-gpu
+                flex flex-col
             `}
         >
-            <div className="relative h-44 sm:h-48 md:h-56 overflow-hidden">
+            <div className="relative w-full h-[220px] shrink-0 bg-gray-800">
                 {projeto.image ? (
-                    <Image
-                        src={projeto.image}
-                        alt={`Screenshot do projeto ${projeto.nome}`}
-                        width={380}
-                        height={214}
-                        className="object-cover w-full h-full transform transition-transform duration-700"
-                        quality={90}
-                        priority={index < 2}
-                        sizes="(max-width: 640px) 85vw, (max-width: 768px) 50vw, 33vw"
-                    />
+                    <div className="relative w-full h-full">
+                        <Image
+                            src={projeto.image}
+                            alt={`Screenshot do projeto ${projeto.nome}`}
+                            fill
+                            className="object-cover"
+                            quality={90}
+                            priority={index < 2}
+                            sizes="(max-width: 640px) 85vw, (max-width: 768px) 50vw, 33vw"
+                            style={{ objectPosition: 'top center' }}
+                        />
+                    </div>
                 ) : (
-                    <div className="w-full h-full bg-gray-700 flex items-center justify-center">
-                        <span className="text-gray-400 text-sm">Sem imagem</span>
+                    <div className="w-full h-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center p-6">
+                        <div className="text-center">
+                            <div className="w-20 h-20 mx-auto mb-3 bg-gray-700/50 rounded-full flex items-center justify-center">
+                                <svg 
+                                    className="w-10 h-10 text-gray-400" 
+                                    fill="none" 
+                                    stroke="currentColor" 
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path 
+                                        strokeLinecap="round" 
+                                        strokeLinejoin="round" 
+                                        strokeWidth={1.5} 
+                                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" 
+                                    />
+                                </svg>
+                            </div>
+                            <span className="text-gray-400 text-base font-medium">
+                                {projeto.nome}
+                            </span>
+                        </div>
                     </div>
                 )}
-                <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/50 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/50 to-transparent pointer-events-none" />
             </div>
 
-            <div className="p-4 sm:p-6">
-                <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3 line-clamp-1">
-                    {projeto.nome}
-                </h2>
-                
-                <p className="text-sm text-gray-300 mb-4 line-clamp-2 sm:line-clamp-3">
-                    {t(`projects.descriptions.${projeto.descricaoKey}.${currentLanguage}`)}
-                </p>
+            <div className="flex flex-col flex-grow p-4 sm:p-6">
+                <div className="flex-grow">
+                    <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3 line-clamp-1">
+                        {projeto.nome}
+                    </h2>
+                    
+                    <p className="text-sm text-gray-300 mb-4 line-clamp-2 sm:line-clamp-3">
+                        {t(`projects.descriptions.${projeto.descricaoKey}.${currentLanguage}`)}
+                    </p>
 
-                <div className="space-y-3">
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-2 mb-4">
                         {projeto.stack.map((tech: string, techIndex: number) => (
                             <span 
                                 key={techIndex}
@@ -493,34 +525,34 @@ const ProjetoCard = ({ projeto, index, expandido, onToggleExpand }: ProjetoCardP
                             </span>
                         ))}
                     </div>
-                    
-                    <div className="flex gap-2" onClick={e => e.stopPropagation()}>
+                </div>
+
+                <div className="flex gap-2 mt-auto" onClick={e => e.stopPropagation()}>
+                    <a 
+                        href={projeto.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`Ver código no GitHub do projeto ${projeto.nome}`}
+                        className="flex-1 bg-gray-700/80 text-white text-center py-2 rounded-lg text-sm font-medium 
+                        hover:bg-gray-600 transition-all duration-300 
+                        shadow-md hover:shadow-lg hover:shadow-gray-700/50"
+                    >
+                        GitHub
+                    </a>
+                    {projeto.mostrarSite && (
                         <a 
-                            href={projeto.github}
+                            href={projeto.site}
                             target="_blank"
                             rel="noopener noreferrer"
-                            aria-label={`Ver código no GitHub do projeto ${projeto.nome}`}
-                            className="flex-1 bg-gray-700/80 text-white text-center py-2 rounded-lg text-sm font-medium 
-                            hover:bg-gray-600 transition-all duration-300 
-                            shadow-md hover:shadow-lg hover:shadow-gray-700/50"
+                            aria-label={`Visitar site do projeto ${projeto.nome}`}
+                            className="flex-1 bg-gradient-to-r from-purple-600 to-purple-700 text-white text-center py-2 rounded-lg text-sm font-medium 
+                            hover:from-purple-500 hover:to-purple-600 
+                            transition-all duration-300 
+                            shadow-md hover:shadow-lg hover:shadow-purple-500/50"
                         >
-                            GitHub
+                            {t('projects.visitSite')}
                         </a>
-                        {projeto.mostrarSite && (
-                            <a 
-                                href={projeto.site}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                aria-label={`Visitar site do projeto ${projeto.nome}`}
-                                className="flex-1 bg-gradient-to-r from-purple-600 to-purple-700 text-white text-center py-2 rounded-lg text-sm font-medium 
-                                hover:from-purple-500 hover:to-purple-600 
-                                transition-all duration-300 
-                                shadow-md hover:shadow-lg hover:shadow-purple-500/50"
-                            >
-                                {t('projects.visitSite')}
-                            </a>
-                        )}
-                    </div>
+                    )}
                 </div>
             </div>
         </button>
