@@ -44,16 +44,6 @@ const projetos = [
         status: "Em andamento"
     },
     {
-        image: '/images/msb-vagas.png',
-        nome: "MSB - VAGAS",
-        descricaoKey: "msbVagas",
-        github: "https://github.com/helxysa/msb-site-vagas",
-        site: "https://msb-site-vagas.vercel.app/",
-        mostrarSite: true,
-        stack: ["Next.js"],
-        status: "Em andamento"
-    },
-    {
         nome: "Uniway - Mobile",
         descricaoKey: "uniway",
         github: "https://github.com/helxysa/UniWay",
@@ -61,16 +51,6 @@ const projetos = [
         mostrarSite: true,
         stack: ["React Native"],
         status: "Em andamento"
-    },
-    {
-        nome: "Sistema Help Center",
-        image: '',
-        descricaoKey: "helpcenter",
-        github: "https://github.com/helxysa/help-center",
-        site: "https://help-center-mp.vercel.app/",
-        mostrarSite: true,
-        stack: ["Next.js"],
-        status: "Em Andamento"
     },
     {
         image: '/images/judbr-2.png',
